@@ -1,0 +1,289 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Add a Recipe</title>
+<style>
+input.ng-valid {
+	background-color: lightgreen;
+}
+
+input.ng-dirty.ng-invalid-required,input.ng-dirty.ng-invalid-number {
+	background-color: red;
+}
+
+input.ng-dirty.ng-invalid-min {
+	background-color: yellow;
+}
+
+
+</style>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('editRecipeCtrl', function($scope, $http, $q) {
+			console.log("Hit!");
+			$scope.inventory = [];
+			$scope.reset = function() {
+				$scope.recipe = {
+					name : '',
+					price : '',
+					ingredients : []
+				};
+				$scope.getInventory();
+				$scope.getRecipes();
+				$scope.duplicate = false;
+				$scope.success = false;
+				$scope.failure = false;
+				$scope.failureIngredient = false;
+				$scope.selectedNone = false;
+				$scope.selectedRecipe = null
+				if (undefined != $scope.editRecipeForm) {
+					$scope.editRecipeForm.$setPristine(); // reset Form
+				}
+				
+			}
+
+			$scope.submit = function() {
+				$scope.editRecipe();
+
+				$scope.reset();
+			}
+			
+			$scope.getRecipes = function() {
+				$http.get("/api/v1/recipes").then(function(response) {
+					$scope.recipeList = response.data;
+					console.log($scope.recipeList);
+				}, function(rejection) {
+					console.error("Error retrieving Recipe");
+				})
+			}
+			
+			$scope.checkRecipes = function(name) {
+				var myData = JSON.parse(localStorage.getItem('myData'));
+				console.log("Cool!");
+				console.log(myData);
+				
+				if(myData != null){
+				for (var i = 0; i < myData.length; i++) {
+				    if (myData[i] === name) {
+				      alert("Recipe " + name + " is aleady delted. Can not edit");
+				      console.log("checking ")
+				      $scope.reset();
+				      return;
+				    }
+				  }
+				}
+				
+				localStorage.removeItem('myData');
+				console.log("checking name")
+				console.log(name)
+				$scope.duplicate = false;
+				$scope.success = false;
+				$scope.failure = false;
+				$scope.failureIngredient = false;
+				$scope.selectedNone = false;
+				$scope.selectedNone = false;
+				$scope.getRecipe(name);
+			}
+			
+			$scope.getRecipe = function(name) {
+				console.log(name)
+				$http.get("/api/v1/recipes/" + name).then(function(response) {
+					$scope.recipe = response.data;
+					console.log($scope.recipe);
+				}, function(rejection) {
+					console.error("Error retrieving Recipe");
+				})
+			}
+			
+			$scope.getRecipes();
+			
+			$scope.editRecipe = function() {
+				$scope.success = false;
+				$scope.failure = false;
+				$scope.failureIngredient = false;
+
+				$http.put("/api/v1/recipes", $scope.recipe).then(
+						function(success) {
+							$scope.success = true;
+							$scope.failure = false;
+						}, function(rejection) {
+							$scope.failure = true;
+							$scope.success = false;
+							console.error("Error while adding recipe");
+							if (rejection.status == 400) {
+							    console.error("Error 400: Insufficient Ingredients");
+							    $scope.failureIngredient = true;
+							} else if (rejection.status == 404) {
+								$scope.failureInsuficient = true;
+							    console.error("Error 507: Insufficient Size");
+							}
+						});
+			}
+			
+			$scope.removeIngredients = function() {
+				$scope.selectedNone = true;
+				for (i = 0; i < $scope.recipe.ingredients.length; i++) {
+					if ($scope.recipe.ingredients[i].selected) {
+				    	  $scope.recipe.ingredients.splice( i, 1 );
+				    	  i--;
+				    	  $scope.selectedNone = false;
+						    
+				      }
+				}
+				console.log($scope.recipe.ingredients);
+				
+			    
+			}
+			
+			$scope.addIngredient = function(ingredientName) {
+				$scope.duplicate = false;
+				if (ingredientName != undefined) {
+					for (i = 0; i < $scope.recipe.ingredients.length; i++) {
+						if ($scope.recipe.ingredients[i].ingredientName == ingredientName) {
+							$scope.duplicate = true;
+							console.log($scope.recipe.ingredients);
+							return;
+						}
+					}
+					$scope.recipe.ingredients.push({ingredientName : ingredientName, amount : 1})
+					$scope.duplicate = false;
+				}
+				console.log($scope.recipe.ingredients);
+			}
+			
+			
+			
+			$scope.getInventory = function() {
+				$http.get("/api/v1/inventory").then(function(response) {
+					$scope.inventory = response.data.ingredients;
+					console.log($scope.inventory);
+				}, function(rejection) {
+					console.error("Error retrieving Inventory");
+				})
+			}
+			$scope.reset();
+		});
+		/*]]>*/ 
+	</script>
+
+	<div ng-app="myApp" class="generic-container ng-cloak"
+		ng-controller="editRecipeCtrl as ctrl">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="lead">Edit Recipe {{selectedRecipe}}</span>
+			</div>
+				<div class="formcontainer">
+				<form ng-submit="submit()" name="editRecipeForm"
+					class="form-horizontal">
+			
+		<span class="lead">Select a recipe to edit</span><br>
+<select ng-model="selectedRecipe" ng-change="checkRecipes(selectedRecipe)" class="form-control" style="min-width: 200px;">
+  <option class="lead" value="" disabled selected>Select recipe</option>
+  <option class="lead" ng-repeat="recipe in recipeList" value="{{recipe.name}}">{{recipe.name}}</option>
+</select>
+
+	
+	<div ng-if="selectedRecipe">
+			<div class="row">
+			<br>
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Name</label>
+							<div class="col-md-7">
+								<input type="text" value={{recipe.name}} name="name"
+									class="name form-control input-sm"
+									placeholder="Enter recipe name" readonly />
+								<div class="has-error" ng-show="editRecipeForm.$dirty">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Price</label>
+							<div class="col-md-7">
+								<input type="number" ng-model="recipe.price" name="price"
+									class="price form-control input-sm"
+									placeholder="Enter recipe price" min="0" />
+								<div class="has-error" ng-show="editRecipeForm.$dirty">
+									<span ng-show="editRecipeForm.price.$error.required">This
+										is a required field</span> <span
+										ng-show="editRecipeForm.price.$error.min">Minimum amount
+										is 0</span> <span ng-show="editRecipeForm.price.$invalid">This
+										field is invalid </span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div ng-repeat="ingredient in recipe.ingredients track by $index">
+	        			<div class="row">
+							<div class="form-group col-md-12">
+		        				<input type="checkbox"
+			        				ng-model="ingredient.selected">
+		       				 	<label class="col-md-2 control-lable" for="file">{{ingredient.ingredientName}}</label>
+		       				 	<div class="col-md-7">
+									<input type="number" ng-model="ingredient.amount" minname="amount"
+										class="ingredient form-control input-sm"
+										placeholder={{ingredinet.amount}}> <div ng-show="ingredient.amount <= 0">Amount
+										must be greater than zero</div>
+										
+								</div>
+					        </div>
+   					     </div>
+   					 </div>
+   					 
+   					 <div class="row">
+    				<div class="form-group col-md-12">
+       				 <label class="col-md-2 control-lable" for="ingredient">Add Ingredient</label>
+        <div class="col-md-7">
+            <select class="form-control input-sm" ng-model="ingredient.ingredientName"
+                    ng-options="item.ingredientName as item.ingredientName for item in inventory">
+                <option value="">Select an Ingredient</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-primary btn-sm" ng-click="addIngredient(ingredient.ingredientName)">
+                Add
+            </button>
+        </div>
+    </div>
+</div>
+
+					<div class="row">
+						<div class="form-actions floatRight">
+							<input type="submit" value="Submit"
+								class="btn btn-primary btn-sm"
+								ng-disabled="editRecipeForm.$invalid" />
+							<button type="button" ng-click="removeIngredients()"
+								class="btn btn-warning btn-sm"
+								ng-disabled="editRecipeForm.$pristine">Remove Selected Ingredient</button>
+							<button type="button" ng-click="reset()" value='Click'
+								class="btn btn-warning btn-sm"
+								ng-disabled="editRecipeForm.$pristine">Reset Form</button>
+						</div>
+					</div>
+					</form>
+						
+	</div>
+	</div>
+			<div ng-show="duplicate">Can't add duplicate ingredients in recipe</div>
+			<div ng-show="success">Recipe Edited</div>
+			<div ng-show="failureIngredient">Can't create recipe. Ingredients required.</div>
+			<div ng-show="selectedNone">Can't Delete Ingredients. Selecting Ingredients Required.</div>
+	</div>
+		<a href="/index">Home</a>
+	</div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Add a Recipe</title>
+    <style>
+      input.ng-valid {
+        background-color: lightgreen;
+      }
+
+      input.ng-dirty.ng-invalid-required,
+      input.ng-dirty.ng-invalid-number {
+        background-color: red;
+      }
+
+      input.ng-dirty.ng-invalid-min {
+        background-color: yellow;
+      }
+      .checklist {
+        list-style-type: none;
+        padding: 0;
+      }
+      .checklist li {
+        display: flex;
+        align-items: center;
+      }
+      .checklist input[type="checkbox"] {
+        margin-right: 8px;
+      }
+    </style>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <script>
+    <!-- script goes here -->
+  </script>
+  <body>
+    <div
+      ng-app="myApp"
+      class="generic-container ng-cloak"
+      ng-controller="editIngredientUnitCtrl as ctrl"
+    >
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="lead">Edit Ingredient Units</span>
+        </div>
+        <div class="formcontainer">
+          <!--
+            <p>
+                <label for="name">Coffee:</label>
+                <input type="text" id="amount" value="5">
+            </p>
+            <p>
+                <label for="name">Milk:</label>
+                <input type="text" id="mount" value="5">
+            </p>
+            <p>
+                <label for="name">Sugar:</label>
+                <input type="text" id="amount" value="5">
+            </p>
+            <p>
+                <label for="name">Chocolate:</label>
+                <input type="text" id="mount" value="5">
+            </p>
+            <p>
+                <label for="name">Vanilla:</label>
+                <input type="text" id="amount" value="5">
+            </p>
+            <p>
+                <label for="name">Caramel:</label>
+                <input type="text" id="mount" value="5">
+            </p>
+              <p id="displayName"></p>
+              <p id="displayMount"></p>-->
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="col-md-2 control-lable" for="file">Milk</label>
+              <div class="col-md-7">
+                <input
+                  type="number"
+                  ng-model="inventory.milk"
+                  name="milk"
+                  class="milk form-control input-sm"
+                  placeholder="5"
+                  required="0"
+                  min="0"
+                />
+                <div class="has-error" ng-show="add-InventoryForm.$dirty">
+                  <!-- <span ng-show="addInventoryForm.milk.$error.required">This
+                                is a required field.</span> <span
+                                ng-show="editIngredientForm.milk.$error.min">Minimum
+                                amount is 0.</span> <span ng-show="addInventoryForm.milk.$invalid">This
+                                field is invalid.</span>-->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="col-md-2 control-lable" for="file">Coffee</label>
+              <div class="col-md-7">
+                <input
+                  type="number"
+                  ng-model="inventory.milk"
+                  name="milk"
+                  class="milk form-control input-sm"
+                  placeholder="6"
+                  required="0"
+                  min="0"
+                />
+                <div class="has-error" ng-show="add-InventoryForm.$dirty">
+                  <!-- <span ng-show="addInventoryForm.milk.$error.required">This
+                                is a required field.</span> <span
+                                ng-show="editIngredientForm.milk.$error.min">Minimum
+                                amount is 0.</span> <span ng-show="addInventoryForm.milk.$invalid">This
+                                field is invalid.</span>-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="col-md-2 control-lable" for="file">Chocolate</label>
+              <div class="col-md-7">
+                <input
+                  type="number"
+                  ng-model="inventory.milk"
+                  name="milk"
+                  class="milk form-control input-sm"
+                  placeholder="1"
+                  required="0"
+                  min="0"
+                />
+                <div class="has-error" ng-show="add-InventoryForm.$dirty">
+                  <!-- <span ng-show="addInventoryForm.milk.$error.required">This
+                                is a required field.</span> <span
+                                ng-show="editIngredientForm.milk.$error.min">Minimum
+                                amount is 0.</span> <span ng-show="addInventoryForm.milk.$invalid">This
+                                field is invalid.</span>-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="col-md-2 control-lable" for="file">Sugar</label>
+              <div class="col-md-7">
+                <input
+                  type="number"
+                  ng-model="inventory.milk"
+                  name="milk"
+                  class="milk form-control input-sm"
+                  placeholder="3"
+                  required="0"
+                  min="0"
+                />
+                <div class="has-error" ng-show="add-InventoryForm.$dirty">
+                  <!-- <span ng-show="addInventoryForm.milk.$error.required">This
+                                is a required field.</span> <span
+                                ng-show="editIngredientForm.milk.$error.min">Minimum
+                                amount is 0.</span> <span ng-show="addInventoryForm.milk.$invalid">This
+                                field is invalid.</span>-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="col-md-2 control-lable" for="file">Vanilla</label>
+              <div class="col-md-7">
+                <input
+                  type="number"
+                  ng-model="inventory.milk"
+                  name="milk"
+                  class="milk form-control input-sm"
+                  placeholder="7"
+                  required="0"
+                  min="0"
+                />
+                <div class="has-error" ng-show="add-InventoryForm.$dirty">
+                  <!-- <span ng-show="addInventoryForm.milk.$error.required">This
+                                is a required field.</span> <span
+                                ng-show="editIngredientForm.milk.$error.min">Minimum
+                                amount is 0.</span> <span ng-show="addInventoryForm.milk.$invalid">This
+                                field is invalid.</span>-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <button id="edit units">Edit units</button>
+          <a href="recipe.html">
+            <button ng-click="myFunction()">Go Back</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

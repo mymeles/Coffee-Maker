@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Inventory</title>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+<style>
+input.ng-valid {
+	background-color: lightgreen;
+}
+
+input.ng-dirty.ng-invalid-required,input.ng-dirty.ng-invalid-number {
+	background-color: red;
+}
+
+input.ng-dirty.ng-invalid-min {
+	background-color: yellow;
+}
+
+
+</style>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+
+<body>
+
+
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('inventoryCtrl', function($scope, $http) {
+			
+			$scope.reset = function() {
+				$scope.inventory = {
+					ingredients : [],
+				};
+				$scope.getInventory();
+				$scope.duplicate = false;
+				if (undefined != $scope.addInventoryForm) {
+					$scope.addRecipeForm.$setPristine(); // reset Form
+				}
+				
+			}
+			
+			$scope.getInventory = function() {
+				$http.get("/api/v1/inventory").then(function(response) {
+					$scope.inventory = response.data;
+					$scope.orgInventory = angular.copy(response.data)
+					console.log($scope.inventory);
+				}, function(rejection) {
+					console.error("Error retrieving Inventory");
+				})
+			}
+			
+			$scope.updateInventory = function() {
+				console.log("checking passed value to api update")
+				console.log($scope.inventory);
+				$scope.success = false;
+				$scope.failure = false;
+				if($scope.inventory.ingredients.length == 0){
+					$scope.failure = true;
+					return;
+				}
+				$http.put("/api/v1/inventory", $scope.inventory).then(
+
+						function(response) {
+							$scope.success = true;
+							$scope.failure = false;
+							$scope.getInventory();
+
+						}, function(rejection) {
+							$scope.failure = true;
+							$scope.success = false;
+							console.error("Error while updating Inventory!");
+						});
+				$scope.success = !($scope.failure);
+			}
+
+			$scope.submit = function() {
+				$scope.updateInventory();
+				$scope.reset();
+			}
+
+			$scope.getInventory();
+
+			$scope.reset = function() {
+				$scope.inventory = {
+						ingredients : [],
+					};
+				$scope.getInventory();
+				if (undefined != $scope.addInventoryForm) {
+					$scope.addInventoryForm.$setPristine(); //reset Form
+				}
+			}
+
+			$scope.reset();
+
+		});
+		/*]]>*/
+	</script>
+
+	<div class="generic-container ng-cloak" ng-app="myApp"
+		ng-controller="inventoryCtrl as ctrl">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="lead">View Inventory</span>
+			</div>
+			</div> 
+			<div class="formcontainer">
+		 <div ng-if="orgInventory.ingredients.length == 0"> <h3> Please <a href="/ingredient">Add Ingredients</a> to Update Inventory
+</h3></div>
+		
+		<table style="font-size: 18px; line-height: 1.5em; margin-bottom: 10px; width: 100%; border: 1px solid black;">
+  <tr>
+    <th style="width: 70%; text-align: left; border: 1px solid black;">Ingredient</th>
+    <th style="width: 30%; text-align: center; border: 1px solid black;">Amount</th>
+  </tr>
+  <tr ng-repeat="ingredient in orgInventory.ingredients track by $index">
+    <td style="width: 70%; border: 1px solid black;">{{ingredient.ingredientName}}</td>
+    <td style="width: 30%; text-align: center; border: 1px solid black;">{{ingredient.amount}}</td>
+  </tr>
+</table>
+
+
+			
+			</div>
+			
+
+			<div class="panel-heading">
+				<span class="lead">Update Inventory Form </span>
+			</div>
+			<div class="formcontainer">
+				<form ng-submit="submit()" name="addInventoryForm"
+					class="form-horizontal">
+
+					<div ng-repeat="ingredient in inventory.ingredients track by $index">
+      <div class="row">
+        <div class="form-group col-md-12" ng-model="ingredient.selected">
+          <label class="col-md-2 control-lable" for="file">{{ingredient.ingredientName}}</label>
+          <div class="col-md-7">
+            <input type="number" ng-model="ingredient.amount" name="amount"
+              class="ingredient form-control input-sm"
+              placeholder="Enter ingredient quantity" required="0" min = "0"/>
+           <div ng-show="ingredient.amount < 0">Amount
+										must be greater than zero</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+							
+					<div class="row">
+						<div class="form-actions floatRight">
+							<input type="submit" value="Submit"
+								class="btn btn-primary btn-sm"
+								ng-disabled="addInventoryForm.$invalid" />
+							<button type="button" ng-click="reset()"
+								class="btn btn-warning btn-sm"
+								ng-disabled="addInventoryForm.$pristine">Reset Form</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div ng-show="success">Inventory Successfully Updated</div>
+			<div ng-show="failure">Error - No ingredients to update inventory</div>
+		</div>
+
+		<a href="/index">Home</a>
+
+
+
+</body>
+</html>
