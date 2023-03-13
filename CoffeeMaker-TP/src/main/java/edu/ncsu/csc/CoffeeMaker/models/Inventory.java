@@ -95,20 +95,15 @@ public class Inventory extends DomainObject {
      * @return true if enough ingredients to make the beverage
      */
     public boolean enoughIngredients ( final Recipe r ) {
-        // final boolean isEnough = true;
         final List<Ingredient> recipeIngredients = r.getIngredients();
         for ( int i = 0; i < recipeIngredients.size(); i++ ) {
             final Ingredient tempIngredient = recipeIngredients.get( i );
             final int amount = tempIngredient.getAmount();
             for ( int j = 0; j < ingredients.size(); j++ ) {
                 final Ingredient currentIngredient = ingredients.get( j );
-                if ( tempIngredient.getIngredientName().equals( currentIngredient.getIngredientName() ) ) {
-                    if ( currentIngredient.getAmount() < amount ) {
-                        // throw new IllegalArgumentException(
-                        // "not enought to make the recipe " +
-                        // currentIngredient.getIngredientName() );
-                        return false;
-                    }
+                if ( tempIngredient.getIngredientName().equals( currentIngredient.getIngredientName() )
+                        && currentIngredient.getAmount() < amount ) {
+                    return false;
                 }
             }
         }

@@ -1,7 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -137,7 +136,7 @@ public class TestDatabaseInteraction {
         recipeService.save( dbRecipe );
 
         assertEquals( "Random", dbRecipe.getName() );
-        assertTrue( 2 == dbRecipe.getPrice() );
+        assertEquals( 2, dbRecipe.getPrice() );
         assertEquals( r.findIngredientByName( "Chocolate" ), dbRecipe.findIngredientByName( "Chocolate" ) );
         assertEquals( r.findIngredientByName( "Milk" ), dbRecipe.findIngredientByName( "Milk" ) );
         assertEquals( r.findIngredientByName( "Sugar" ), dbRecipe.findIngredientByName( "Sugar" ) );

@@ -23,23 +23,17 @@ import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
-/**
- * Tests coffee API
- *
- * @author sanket
- *
- */
 @ExtendWith ( SpringExtension.class )
 @SpringBootTest
 @AutoConfigureMockMvc
 public class APICoffeeTest {
-    /** mvc for api **/
+
     @Autowired
     private MockMvc          mvc;
-    /** recipe service object for db **/
+
     @Autowired
     private RecipeService    service;
-    /** inventory service object for db **/
+
     @Autowired
     private InventoryService iService;
 
@@ -52,28 +46,24 @@ public class APICoffeeTest {
         iService.deleteAll();
 
         final Inventory ivt = iService.getInventory();
+
         ivt.addIngredient( new Ingredient( "Chocolate", 15 ) );
         ivt.addIngredient( new Ingredient( "Coffee", 15 ) );
         ivt.addIngredient( new Ingredient( "Milk", 15 ) );
         ivt.addIngredient( new Ingredient( "Sugar", 15 ) );
+
         iService.save( ivt );
 
         final Recipe recipe = new Recipe();
         recipe.setName( "Coffee" );
         recipe.setPrice( 50 );
-        recipe.addIngredient( new Ingredient( "Chocolate", 0 ) );
         recipe.addIngredient( new Ingredient( "Coffee", 3 ) );
         recipe.addIngredient( new Ingredient( "Milk", 1 ) );
         recipe.addIngredient( new Ingredient( "Sugar", 1 ) );
+        recipe.addIngredient( new Ingredient( "Chocolate", 0 ) );
         service.save( recipe );
     }
 
-    /**
-     * Tests purchasing a beverage
-     *
-     * @throws Exception
-     *             if api call cannot be made
-     */
     @Test
     @Transactional
     public void testPurchaseBeverage1 () throws Exception {
@@ -86,12 +76,6 @@ public class APICoffeeTest {
 
     }
 
-    /**
-     * Tests purchasing a beverage if insufficient amount paid
-     *
-     * @throws Exception
-     *             if api call cannot be made
-     */
     @Test
     @Transactional
     public void testPurchaseBeverage2 () throws Exception {
@@ -105,26 +89,51 @@ public class APICoffeeTest {
 
     }
 
-    /**
-     * Tests purchasing a beverage if insufficient inventory
-     *
-     * @throws Exception
-     *             if api call cannot be made
-     */
     @Test
     @Transactional
     public void testPurchaseBeverage3 () throws Exception {
         /* Insufficient inventory */
 
         final Inventory ivt = iService.getInventory();
-        ivt.findIngredientByName( "Coffee" ).setAmount( 0 );
-        iService.save( ivt );
 
-        final String name = "Coffee";
+        final Recipe recipe = new Recipe();
+        recipe.setName( "Mocha" );
+        recipe.setPrice( 5 );
+        recipe.addIngredient( new Ingredient( "Chocolate", 15 ) );
+        recipe.addIngredient( new Ingredient( "Coffee", 15 ) );
+        recipe.addIngredient( new Ingredient( "Milk", 15 ) );
+        recipe.addIngredient( new Ingredient( "Sugar", 15 ) );
+
+        service.save( recipe );
+
+        for ( final Ingredient ing : iService.getInventory().getIngredients() ) {
+            System.out.println( ing.getIngredientName() );
+            System.out.println( ing.getAmount() );
+        }
+
+        ivt.useIngredients( recipe );
+        final String name = "Mocha";
 
         mvc.perform( post( String.format( "/api/v1/makecoffee/%s", name ) ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( 50 ) ) ).andExpect( status().is4xxClientError() )
                 .andExpect( jsonPath( "$.message" ).value( "Not enough inventory" ) );
+
+    }
+
+    @Test
+    @Transactional
+    public void testPurchaseBeverage4 () throws Exception {
+        /* Invalid recipe */
+
+        final Inventory ivt = iService.getInventory();
+        ivt.addIngredient( new Ingredient( "Coffee", 0 ) );
+        iService.save( ivt );
+
+        final String name = "DN";
+
+        mvc.perform( post( String.format( "/api/v1/makecoffee/%s", name ) ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( 50 ) ) ).andExpect( status().is4xxClientError() )
+                .andExpect( jsonPath( "$.message" ).value( "No recipe selected" ) );
 
     }
 
