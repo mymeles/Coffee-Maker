@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Add a Recipe</title>
+    <style>
+      input.ng-valid {
+        background-color: lightgreen;
+      }
+
+      input.ng-dirty.ng-invalid-required,
+      input.ng-dirty.ng-invalid-number {
+        background-color: red;
+      }
+
+      input.ng-dirty.ng-invalid-min {
+        background-color: yellow;
+      }
+      .checklist {
+        list-style-type: none;
+        padding: 0;
+      }
+      .checklist li {
+        display: flex;
+        align-items: center;
+      }
+      .checklist input[type="checkbox"] {
+        margin-right: 8px;
+      }
+    </style>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <div
+      ng-app="myApp"
+      class="generic-container ng-cloak"
+      ng-controller="addRecipeCtrl as ctrl"
+    >
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="lead">Remove Ingredient</span>
+        </div>
+        <div class="formcontainer">
+          <ul id="checklist" class="checklist">
+            <li>
+              <input type="checkbox" id="chocolate" />
+              <label for="Chocolate">chocolate</label>
+            </li>
+            <li>
+              <input type="checkbox" id="Milk" />
+              <label for="Milk">Milk</label>
+            </li>
+            <li>
+              <input type="checkbox" id="Vanilla" />
+              <label for="Vanilla">Vanilla</label>
+            </li>
+            <li>
+              <input type="checkbox" id="Coffee" />
+              <label for="Coffee">Coffee</label>
+            </li>
+          </ul>
+
+          <button id="remove Ingredient">Remove Ingredient</button>
+          <a href="recipe.html">
+            <button ng-click="myFunction()">Go Back</button>
+          </a>
+          <script>
+            <!-- script goes here -->
+          </script>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

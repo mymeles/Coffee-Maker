@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Inventory</title>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+<style>
+input.ng-valid {
+	background-color: lightgreen;
+}
+
+input.ng-dirty.ng-invalid-required,input.ng-dirty.ng-invalid-number {
+	background-color: red;
+}
+
+input.ng-dirty.ng-invalid-min {
+	background-color: yellow;
+}
+
+
+</style>
+</head>
+
+<body>
+
+	<div class="generic-container ng-cloak" ng-app="myApp"
+		ng-controller="inventoryCtrl as ctrl">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="lead">Add Inventory</span>
+			</div>
+
+			<div class="formcontainer">
+				<form ng-submit="submit()" name="addInventoryForm"
+					class="form-horizontal">
+					<div class="row">
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Coffee</label>
+							<div class="col-md-7">
+								<input type="number" ng-model="inventory.coffee" name="coffee"
+									class="coffee form-control input-sm"
+									placeholder="0" required="0" min="0"/>
+								<div class="has-error" ng-show="addInventoryForm.$dirty">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="row">
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Milk</label>
+							<div class="col-md-7">
+								<input type="number" ng-model="inventory.milk" name="milk"
+									class="milk form-control input-sm"
+									placeholder="0" required="0" min="0"/>
+								<div class="has-error" ng-show="addInventoryForm.$dirty">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Sugar</label>
+							<div class="col-md-7">
+								<input type="number" ng-model="inventory.sugar" name="sugar"
+									class="sugar form-control input-sm"
+									placeholder="0r" required="0" min="0"/>
+								<div class="has-error" ng-show="addInventoryForm.$dirty">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="row">
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Chocolate</label>
+							<div class="col-md-7">
+								<input type="number" ng-model="inventory.chocolate"
+									name="chocolate" class="chocolate form-control input-sm"
+									placeholder="0" required="0" min="0"/>
+								<div class="has-error" ng-show="addInventoryForm.$dirty">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+                    <div class="row">
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Vanilla</label>
+							<div class="col-md-7">
+								<input type="number" ng-model="inventory.Vanilla"
+									name="Vanilla" class="Vanilla form-control input-sm"
+									placeholder="0" required="0" min="0"/>
+								<div class="has-error" ng-show="addInventoryForm.$dirty">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Protein Powder</label>
+							<div class="col-md-7">
+								<input type="number" ng-model="inventory.Protein Powder"
+									name="Protein Powder" class="chocolate form-control input-sm"
+									placeholder="0" required="0" min="0"/>
+								<div class="has-error" ng-show="addInventoryForm.$dirty">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Caramel</label>
+							<div class="col-md-7">
+								<input type="number" ng-model="inventory.Caramel"
+									name="Caramel" class="Caramel form-control input-sm"
+									placeholder="0" required="0" min="0"/>
+								<div class="has-error" ng-show="addInventoryForm.$dirty">
+							
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="row">
+						<div class="form-actions floatRight">
+							<input type="submit" value="Submit"
+								class="btn btn-primary btn-sm"
+								ng-disabled="addInventoryForm.$invalid" />
+							<button type="button" ng-click="reset()"
+								class="btn btn-warning btn-sm"
+								ng-disabled="addInventoryForm.$pristine">Reset Form</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<a href="/index">Home</a>
+	</div>
+
+
+
+</body>
+</html>
