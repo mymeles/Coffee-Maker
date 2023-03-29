@@ -185,4 +185,21 @@ APIIngredientController
 +getIngredient(id: Long): ResponseEntity
 +deleteIngredient(id:Long): ResponseEntity 
 +updateIngredient(id: Long, ingredient:Ingredient): ResponseEntity
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>592</x><y>64</y><w>64</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;80;60;10</additional_attributes></element></diagram>
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>592</x><y>64</y><w>64</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;80;60;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>16</x><y>848</y><w>272</w><h>128</h></coordinates><panel_attributes>&lt;&lt;Java Class&gt;&gt;
+Ingredient
+--
+-id : Long
+-IngredientName: String
+-amount: Integer
+--
++Ingredient()
++Ingredient(String, Integer)
++setIngredientName(Name: String): void
++setAmount(Amount: Integer): void
++getIngredientName(): String Name
++getAmount():Integer Amount
++getId(): Long Id
++setId(Id:Long): void
++toString() : String
++hashCode(): int
++equals(obj: Object):boolean</panel_attributes><additional_attributes></additional_attributes></element></diagram>
