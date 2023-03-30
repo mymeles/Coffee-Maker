@@ -1,20 +1,27 @@
 Domain Objects to add: <br>
-* Order
-* Orders 
 * User
+fields
+long id
+string Name 
+string password 
+string role 
+
+methods
+user(name, password, role): User 
+checkPass(string attemptedPass): bool 
+setters and getters 
 
 API Controllers to Add: <br>
-* Order
-* User (sign up) 
-* LogIn 
-* Orders 
+* User 
+* Login
 
 Services to add: <br> 
-* OrderService 
 * UserService 
-* OrdersService 
+methods 
+createUser 
+deleteUser 
+editUser 
+getUser
 
 Respositories to add: <br> 
-* Order 
-* Orders 
-* Users
+* UserRespository
