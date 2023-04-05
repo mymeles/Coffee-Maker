@@ -26,6 +26,45 @@ public class MappingController {
     public String index ( final Model model ) {
         return "index";
     }
+    
+    /**
+     * On a GET request to /index, the Controller will return
+     * /src/main/resources/templates/homePage.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/homePage", "/homePage.html" } )
+    public String home ( final Model model ) {
+        return "homePage";
+    }
+    
+    /**
+     * On a GET request to /index, the Controller will return
+     * /src/main/resources/templates/homePage.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/createUser", "/createUser.html" } )
+    public String createUser ( final Model model ) {
+        return "createUser";
+    }
+    
+    /**
+     * On a GET request to /index, the Controller will return
+     * /src/main/resources/templates/homePage.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/loginUser", "/loginUser.html" } )
+    public String loginUser ( final Model model ) {
+        return "loginUser";
+    }
 
     /**
      * On a GET request to /recipe, the RecipeController will return

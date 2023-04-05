@@ -1,20 +1,69 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Welcome to the CSC326 CoffeeMaker</title>
+<title>CoffeeMaker</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<style>
+		.button {
+			display: inline-block;
+			padding: 12px 24px;
+			font-size: 20px;
+			font-weight: bold;
+			text-align: center;
+			text-decoration: none;
+			background-color: #2B2D42;
+			color: #fff;
+			border-radius: 4px;
+			box-shadow: 0 2px 5px rgba(0,0,0,.3);
+			margin-right: 20px;
+		}
+
+		.center {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+	</style>
+        <meta charset="utf-8">
+        <meta ingredientName="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
 </head>
+
 <body>
-	<h1>Coffee Maker</h1>
-	<h2>Available Options</h2>
-	<ul>
-		<li><a href="ingredient.html">Add Ingredient</a></li>
-		<li><a href="inventory.html">Update Inventory</a></li>
-		<li><a href="addInventory.html">Add Inventory</a></li>
-		<li><a href="recipe.html">Add a Recipe</a></li>
-		<li><a href="editrecipe.html">Edit Recipe</a></li>
-		<li><a href="deleterecipe.html">Delete Recipe</a></li>
-		<li><a href="makecoffee.html">Make Coffee</a></li>
-	</ul>
+       <div ng-app="myApp" class="generic-container ng-cloak"
+        ng-controller="addIngredientCtrl as ctrl">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">Welcome To CoffeeMaker</span>
+            </div>      
+            <div class="formcontainer">
+              <div class="row">
+                        <div class="form-group col-md-12">
+			<div class="center">
+		<a href="#" class="button" onclick="createAccount()">Create Account</a><br>
+		<a href="#" class="button" onclick="login()">Login</a>
+	</div>
+	<script>
+		function createAccount() {
+			var createAccountLink = "createUser.html";
+			window.location.href = createAccountLink;
+		}
+
+		function login() {
+			var loginLink = "loginUser.html";
+			window.location.href = loginLink;
+		}
+	</script>
+				
+	     </div>
+    </div>
+         </div>
+    </div>
+       </div>
 </body>
 </html> 
+
+
+
