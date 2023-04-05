@@ -1,6 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -23,6 +23,7 @@ import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.User;
 import edu.ncsu.csc.CoffeeMaker.models.roles.Role;
 import edu.ncsu.csc.CoffeeMaker.services.UserService;
+import edu.ncsu.csc.CoffeeMaker.userAuthentication.SecurityEncoder;
 
 /**
  * Test class for APIUserController
@@ -83,10 +84,8 @@ class APIUserTest {
 
         mvc.perform( get( "/api/v1/users" ) ).andExpect( status().isOk() )
                 .andExpect( jsonPath( "$[0].username" ).value( "user1" ) )
-                .andExpect( jsonPath( "$[0].password" ).value( "password" ) )
                 .andExpect( jsonPath( "$[0].role" ).value( "CUSTOMER" ) )
                 .andExpect( jsonPath( "$[1].username" ).value( "user2" ) )
-                .andExpect( jsonPath( "$[1].password" ).value( "password" ) )
                 .andExpect( jsonPath( "$[1].role" ).value( "STAFF" ) );
     }
 
@@ -118,7 +117,8 @@ class APIUserTest {
                 .andExpect( status().isOk() ).andExpect( jsonPath( "$.message" ).value( "user1 password updated" ) );
 
         final User updatedUser = userService.findByUsername( "user1" );
-        assertEquals( newPassword, updatedUser.getPassword() );
+        assertTrue( SecurityEncoder.checkPassword( newPassword, updatedUser.getPassword() ) );
+
     }
 
     @Test

@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import edu.ncsu.csc.CoffeeMaker.models.roles.Role;
+import edu.ncsu.csc.CoffeeMaker.userAuthentication.SecurityEncoder;
 
 /**
  * User for the coffee maker. User is tied to the database using Hibernate
@@ -16,6 +17,8 @@ import edu.ncsu.csc.CoffeeMaker.models.roles.Role;
  * for database support.
  *
  * @author Harris Khan
+ * @author Sanjit Verma
+ * @author James Leach
  */
 @Entity
 public class User extends DomainObject {
@@ -105,10 +108,21 @@ public class User extends DomainObject {
 
     /**
      * @param password
-     *            the password to set
+     *            the password to set after encryption
      */
     public void setPassword ( final String password ) {
-        this.password = password;
+        this.password = SecurityEncoder.encryptPassword( password );
+
+    }
+
+    /**
+     * This method checks if the password from the user and encoded passwords
+     * are similar
+     *
+     * @return true if the passwords match, false if not
+     */
+    public boolean checkPassword ( final String plaintext ) {
+        return SecurityEncoder.checkPassword( plaintext, getPassword() );
     }
 
     /**
@@ -128,7 +142,7 @@ public class User extends DomainObject {
 
     @Override
     public String toString () {
-        return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + "]";
+        return "User [id=" + id + ", username=" + username + ", role=" + role + "]";
     }
 
     @Override
