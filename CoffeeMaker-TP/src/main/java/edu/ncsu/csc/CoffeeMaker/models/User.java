@@ -68,6 +68,8 @@ public class User extends DomainObject {
     }
 
     /**
+     * This gets the ID
+     *
      * @return the id
      */
     @Override
@@ -76,6 +78,8 @@ public class User extends DomainObject {
     }
 
     /**
+     * This sets the ID
+     *
      * @param id
      *            the id to set (used by hibernate)
      */
@@ -85,6 +89,8 @@ public class User extends DomainObject {
     }
 
     /**
+     * This gets the username
+     *
      * @return the username
      */
     public String getUsername () {
@@ -92,6 +98,8 @@ public class User extends DomainObject {
     }
 
     /**
+     * This sets the username
+     *
      * @param username
      *            the username to set
      */
@@ -100,6 +108,8 @@ public class User extends DomainObject {
     }
 
     /**
+     * This gets the password
+     *
      * @return the password
      */
     public String getPassword () {
@@ -107,6 +117,8 @@ public class User extends DomainObject {
     }
 
     /**
+     * This sets the password
+     *
      * @param password
      *            the password to set after encryption
      */
@@ -126,6 +138,8 @@ public class User extends DomainObject {
     }
 
     /**
+     * This gets the role
+     *
      * @return the role
      */
     public Role getRole () {
@@ -133,6 +147,8 @@ public class User extends DomainObject {
     }
 
     /**
+     * This sets the role of the user
+     *
      * @param role
      *            the role to set
      */

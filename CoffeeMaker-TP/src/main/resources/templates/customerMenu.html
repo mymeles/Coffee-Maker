@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Customer Menu</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<style>
+		.button {
+			display: inline-block;
+			padding: 12px 24px;
+			font-size: 20px;
+			font-weight: bold;
+			text-align: center;
+			text-decoration: none;
+			background-color: #2B2D42;
+			color: #fff;
+			border-radius: 4px;
+			box-shadow: 0 2px 5px rgba(0,0,0,.3);
+			margin-right: 20px;
+		}
+
+		.center {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+	</style>
+        <meta charset="utf-8">
+        <meta ingredientName="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+       <div ng-app="myApp" class="generic-container ng-cloak"
+        ng-controller="addIngredientCtrl as ctrl">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">Customer Menu</span>
+            </div>      
+            <div class="formcontainer">
+              <div class="row">
+                        <div class="form-group col-md-12">
+			<div class="center">
+		<a href="#" class="button" onclick="orderBeverage()">Order Beverage</a><br>
+	</div>
+	<script>
+		function orderBeverage() {
+			var customerorderLink = "makecoffee.html";
+			window.location.href = customerorderLink;
+		}
+
+		
+	</script>
+				
+	     </div>
+    </div>
+         </div>
+    </div>
+       </div>
+</body>
+</html> 

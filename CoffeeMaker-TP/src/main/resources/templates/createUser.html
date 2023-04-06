@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Create A user </title>
+<style>
+input.ng-valid {
+	background-color: lightgreen;
+}
+
+input.ng-dirty.ng-invalid-required,input.ng-dirty.ng-invalid-number {
+	background-color: red;
+}
+
+input.ng-dirty.ng-invalid-min {
+	background-color: yellow;
+}
+
+
+</style>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+<script>
+	/*<![CDATA[*/
+	var app = angular.module('myApp', []);
+	app.controller('createUserCtrl', function($scope, $http) {
+		console.log("Hit!");
+		$scope.reset = function() {
+			$scope.user = {
+				username : '',
+				password : '',
+				role: ''
+			};
+			$scope.confirmPassword = '';
+			if(undefined != $scope.createUser ){
+				$scope.createUser.$setPristine();
+			}
+		}
+		$scope.confirmPassword = '';
+		
+		$scope.submit = function() {
+			//$scope.failureIngredient = false;
+			if ($scope.user.password !== $scope.confirmPassword) {
+				// add a boolean where it is set to false so that the user 
+				// knows that the password does not match. 
+				alert("Password does not match");
+				$scope.reset();
+				return; 
+             }
+			$scope.createuser();
+			$scope.reset();
+			$scope.confirmPassword = '';
+		};
+		
+
+		$scope.createuser = function() {
+			console.log($scope.user)
+			$scope.success = false;
+			$scope.failure = false;
+
+			$http.post("/api/v1/users", $scope.user).then(
+				function(success) {
+					$scope.success = true;
+					$scope.failure = false;
+				}, 
+				function(rejection) {
+					$scope.failure = true;
+					$scope.success = false;
+					console.error("Error while creating user");
+					if (rejection.status == 409) {
+						console.error("Error 400: User Already exists");
+						$scope.failure = true;
+					}
+				}
+			);
+		};
+
+	});
+	/*]]>*/
+</script>
+
+
+
+<div ng-app="myApp" class="generic-container ng-cloak" ng-controller="createUserCtrl">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="lead">Create Your Coffeemaker Account</span>
+			</div>
+				<div class="formcontainer">
+				<form ng-submit="submit()" name="createUser" class="form-horizontal">
+
+
+					<div class="row">
+						<div class="form-group col-md-12">
+						<label class="col-md-2 control-lable" for="file">Username:</label>
+							<div class="col-md-7">
+								<input type="text" ng-model="user.username" class="name form-control input-sm" required>	
+							</div>
+						</div>
+					</div>
+	        			<div class="row">
+							<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Password:</label>
+								<div class="col-md-7">
+            <input type="password" ng-model="user.password" class="name form-control input-sm" ng-minlength="6" ng-maxlength="20" required>
+							</div>
+   					     </div>
+   					 </div>
+   					 
+   					 <div class="row">
+    				<div class="form-group col-md-12">
+    				<label class="col-md-2 control-lable" for="file">Confirm Password:</label>
+    					<div class="col-md-7">
+						<input type="password" ng-model="confirmPassword"  class="name form-control input-sm" required>
+					</div>
+  				  	</div>
+					</div>
+					
+					<div class="row">
+	    			<div class="form-group col-md-12">
+	    				<label class="col-md-2 control-lable" for="file">Select A Role</label>
+	    					<div class="col-md-7">
+								<select ng-model="user.role" required>
+									<option value="">-- Select a role --</option>
+									<option value="CUSTOMER">Customer</option>
+									<option value="STAFF">Staff</option>
+								</select>
+							</div>
+  				  		</div>
+					</div>
+		<div class="row">
+						<div class="form-actions floatRight">
+							<input type="submit" value="Create User"
+								class="btn btn-primary btn-sm"
+								ng-disabled="createUser.$invalid" />
+							<button type="button" ng-click="reset()" value='Click'
+								class="btn btn-warning btn-sm"
+								ng-disabled="createUser.$pristine">Reset Form</button>
+						</div>
+					</div>
+						</div>
+		<a href="/index">Home</a>
+			
+	</div>
+					
+						<div ng-show="success">User Account successfully Created <a href="/loginUser.html">Login</a> </div>
+		<div ng-show="failure">Duplicate Username. Can't Create account.</div>
+	
+						
+	</div>
+		
+</body>
+</html>
