@@ -26,7 +26,7 @@ public class MappingController {
     public String index ( final Model model ) {
         return "index";
     }
-    
+
     /**
      * On a GET request to /index, the Controller will return
      * /src/main/resources/templates/homePage.html.
@@ -39,7 +39,7 @@ public class MappingController {
     public String home ( final Model model ) {
         return "homePage";
     }
-    
+
     /**
      * On a GET request to /index, the Controller will return
      * /src/main/resources/templates/homePage.html.
@@ -52,7 +52,7 @@ public class MappingController {
     public String createUser ( final Model model ) {
         return "createUser";
     }
-    
+
     /**
      * On a GET request to /index, the Controller will return
      * /src/main/resources/templates/homePage.html.
@@ -196,6 +196,34 @@ public class MappingController {
     @GetMapping ( { "/makecoffee", "/makecoffee.html" } )
     public String makeCoffeeForm ( final Model model ) {
         return "makecoffee";
+    }
+
+    /**
+     * Handles a GET request for the staff menu. The GET request provides a view
+     * to the client that includes options for staff members to view orders,
+     * manage inventory, and manage user accounts.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/staffMenu", "/staffMenu.html" } )
+    public String staffManuForm ( final Model model ) {
+        return "staffMenu";
+    }
+
+    /**
+     * Handles a GET request for the customer menu. The GET request provides a
+     * view to the client that includes options for customers to view the menu,
+     * place orders, and view their order history.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/customerMenu", "/customerMenu.html" } )
+    public String staffMenuForm ( final Model model ) {
+        return "customerMenu";
     }
 
 }
