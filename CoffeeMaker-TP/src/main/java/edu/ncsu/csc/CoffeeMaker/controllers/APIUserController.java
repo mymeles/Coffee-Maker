@@ -24,6 +24,8 @@ import edu.ncsu.csc.CoffeeMaker.services.UserService;
  * to JSON
  *
  * @author Harris Khan
+ * @author sanjitverma
+ * @author James Leach
  *
  */
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
@@ -112,11 +114,12 @@ public class APIUserController extends APIController {
                     HttpStatus.NOT_FOUND );
         }
 
-        if ( !user.getPassword().equals( password ) || !user.getRole().toString().equals( role ) ) {
+        if ( !user.checkPassword( password ) || !user.getRole().toString().equals( role ) ) {
             return new ResponseEntity( errorResponse( "Invalid LogIn Credentials" ), HttpStatus.CONFLICT );
         }
-
-        return new ResponseEntity( successResponse( "Correct login details!" ), HttpStatus.OK );
+        else {
+            return new ResponseEntity( successResponse( "Correct login details!" ), HttpStatus.OK );
+        }
     }
 
     /**
