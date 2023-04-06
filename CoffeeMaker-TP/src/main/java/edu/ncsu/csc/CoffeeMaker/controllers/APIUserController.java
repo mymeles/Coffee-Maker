@@ -98,6 +98,8 @@ public class APIUserController extends APIController {
      *            the username to log into
      * @param password
      *            the password of the user to log in to
+     * @param role
+     *            the role of the user being logged into
      *
      * @return a success or error response
      */
@@ -146,8 +148,9 @@ public class APIUserController extends APIController {
      * to delete a User by automatically converting the JSON RequestBody
      * provided to a User object. Invalid JSON will fail.
      *
-     * @param user
+     * @param username
      *            The valid User to be deleted.
+     *
      * @return ResponseEntity indicating success if the User could be deleted
      */
     @DeleteMapping ( BASE_PATH + "/users/{username}" )
