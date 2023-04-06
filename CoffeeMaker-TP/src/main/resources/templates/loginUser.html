@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Log In </title>
+<style>
+input.ng-valid {
+	background-color: lightgreen;
+}
+
+input.ng-dirty.ng-invalid-required,input.ng-dirty.ng-invalid-number {
+	background-color: red;
+}
+
+input.ng-dirty.ng-invalid-min {
+	background-color: yellow;
+}
+
+
+</style>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+<script>
+	/*<![CDATA[*/
+	var app = angular.module('myApp', []);
+	app.controller('loginCtrl', function($scope, $http) {
+		console.log("Hit!");
+		
+		$scope.username = '';
+		$scope.password = '';
+		$scope.role = '';
+		$scope.staffrole = "STAFF";
+		$scope.reset = function() {
+				$scope.username = '';
+				$scope.password = '';
+				$scope.role = '';
+				if(undefined != $scope.logIn ){
+					$scope.logIn.$setPristine();
+				}
+		}
+		
+		
+		$scope.submit = function() {
+			$scope.login();
+			$scope.reset();
+		};
+		
+
+		$scope.login = function() {
+			$scope.failure = false;
+			const role = String($scope.role);
+			$http.get("/api/v1/users/" + $scope.username + "/" + $scope.password + "/" + $scope.role, 
+					$scope.username, $scope.password, $scope.role).then(
+					function(success) {
+						
+						if(role.startsWith("S")){
+							var staffmenuLink = "/staffMenu";
+							window.location.href = staffmenuLink;
+						}
+						else{
+							var customermenuLink = "/customerMenu";
+							window.location.href = customermenuLink;
+						}
+					},
+					function(rejection) {
+						console.error("Error while logging in");
+						alert("Invalid Credentials.")
+						$scope.failure = true;
+					});
+		};
+		
+		$scope.reset();
+
+	});
+	/*]]>*/
+</script>
+
+
+
+<div ng-app="myApp" class="generic-container ng-cloak" ng-controller="loginCtrl">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="lead">Log In</span>
+			</div>
+				<div class="formcontainer">
+				<form ng-submit="submit()" name="logIn" class="form-horizontal">
+
+
+					<div class="row">
+						<div class="form-group col-md-12">
+						<label class="col-md-2 control-lable" for="file">Username:</label>
+							<div class="col-md-7">
+								<input type="text" ng-model="username" class="name form-control input-sm" required>	
+							</div>
+						</div>
+					</div>
+	        			<div class="row">
+							<div class="form-group col-md-12">
+							<label class="col-md-2 control-lable" for="file">Password:</label>
+								<div class="col-md-7">
+            <input type="password" ng-model="password" class="name form-control input-sm" ng-minlength="6" ng-maxlength="20" required>
+							</div>
+   					     </div>
+   					 </div>
+   					 
+   					 
+					
+					<div class="row">
+	    			<div class="form-group col-md-12">
+	    				<label class="col-md-2 control-lable" for="file">Select A Role</label>
+	    					<div class="col-md-7">
+								<select ng-model="role" required>
+									<option value="">-- Select a role --</option>
+									<option value="CUSTOMER">Customer</option>
+									<option value="STAFF">Staff</option>
+								</select>
+							</div>
+  				  		</div>
+					</div>
+		<div class="row">
+						<div class="form-actions floatRight">
+							<input type="submit" value="Log In"
+								class="btn btn-primary btn-sm"
+								ng-disabled="logIn.$invalid" />
+							<button type="button" ng-click="reset()" value='Click'
+								class="btn btn-warning btn-sm"
+								ng-disabled="login.$pristine">Reset Form</button>
+						</div>
+					</div>
+						</div>
+		<a href="/index">Home</a>
+			
+	</div>
+					
+		
+		<div ng-show="failure">Invalid Credentials.</div>
+	
+						
+	</div>
+		
+</body>
+</html>
+
+
+

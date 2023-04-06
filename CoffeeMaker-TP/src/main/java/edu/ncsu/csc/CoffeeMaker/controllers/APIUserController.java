@@ -98,19 +98,22 @@ public class APIUserController extends APIController {
      *            the username to log into
      * @param password
      *            the password of the user to log in to
+     * @param role
+     *            the role of the user being logged into
      *
      * @return a success or error response
      */
-    @GetMapping ( BASE_PATH + "/users/{username}/{password}" )
-    public ResponseEntity login ( @PathVariable final String username, @PathVariable final String password ) {
+    @GetMapping ( BASE_PATH + "/users/{username}/{password}/{role}" )
+    public ResponseEntity login ( @PathVariable final String username, @PathVariable final String password,
+            @PathVariable final String role ) {
         final User user = userService.findByUsername( username );
         if ( user == null ) {
             return new ResponseEntity( errorResponse( "User with the username " + username + " not found" ),
                     HttpStatus.NOT_FOUND );
         }
 
-        if ( !user.getPassword().equals( password ) ) {
-            return new ResponseEntity( errorResponse( "The password was incorrect" ), HttpStatus.CONFLICT );
+        if ( !user.getPassword().equals( password ) || !user.getRole().toString().equals( role ) ) {
+            return new ResponseEntity( errorResponse( "Invalid LogIn Credentials" ), HttpStatus.CONFLICT );
         }
 
         return new ResponseEntity( successResponse( "Correct login details!" ), HttpStatus.OK );
@@ -145,8 +148,9 @@ public class APIUserController extends APIController {
      * to delete a User by automatically converting the JSON RequestBody
      * provided to a User object. Invalid JSON will fail.
      *
-     * @param user
+     * @param username
      *            The valid User to be deleted.
+     *
      * @return ResponseEntity indicating success if the User could be deleted
      */
     @DeleteMapping ( BASE_PATH + "/users/{username}" )
