@@ -26,7 +26,7 @@ public class MappingController {
     public String index ( final Model model ) {
         return "index";
     }
-    
+
     /**
      * On a GET request to /index, the Controller will return
      * /src/main/resources/templates/homePage.html.
@@ -39,7 +39,7 @@ public class MappingController {
     public String home ( final Model model ) {
         return "homePage";
     }
-    
+
     /**
      * On a GET request to /index, the Controller will return
      * /src/main/resources/templates/homePage.html.
@@ -52,7 +52,7 @@ public class MappingController {
     public String createUser ( final Model model ) {
         return "createUser";
     }
-    
+
     /**
      * On a GET request to /index, the Controller will return
      * /src/main/resources/templates/homePage.html.
@@ -196,6 +196,16 @@ public class MappingController {
     @GetMapping ( { "/makecoffee", "/makecoffee.html" } )
     public String makeCoffeeForm ( final Model model ) {
         return "makecoffee";
+    }
+
+    @GetMapping ( { "/staffMenu", "/staffMenu.html" } )
+    public String staffManuForm ( final Model model ) {
+        return "staffMenu";
+    }
+
+    @GetMapping ( { "/customerMenu", "/customerMenu.html" } )
+    public String staffMenuForm ( final Model model ) {
+        return "customerMenu";
     }
 
 }

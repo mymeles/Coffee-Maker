@@ -36,6 +36,9 @@ input.ng-dirty.ng-invalid-min {
 				role: ''
 			};
 			$scope.confirmPassword = '';
+			if(undefined != $scope.createUser ){
+				$scope.createUser.$setPristine();
+			}
 		}
 		$scope.confirmPassword = '';
 		

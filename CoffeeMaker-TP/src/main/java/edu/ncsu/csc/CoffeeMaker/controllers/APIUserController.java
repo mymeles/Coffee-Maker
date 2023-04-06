@@ -101,16 +101,17 @@ public class APIUserController extends APIController {
      *
      * @return a success or error response
      */
-    @GetMapping ( BASE_PATH + "/users/{username}/{password}" )
-    public ResponseEntity login ( @PathVariable final String username, @PathVariable final String password ) {
+    @GetMapping ( BASE_PATH + "/users/{username}/{password}/{role}" )
+    public ResponseEntity login ( @PathVariable final String username, @PathVariable final String password,
+            @PathVariable final String role ) {
         final User user = userService.findByUsername( username );
         if ( user == null ) {
             return new ResponseEntity( errorResponse( "User with the username " + username + " not found" ),
                     HttpStatus.NOT_FOUND );
         }
 
-        if ( !user.getPassword().equals( password ) ) {
-            return new ResponseEntity( errorResponse( "The password was incorrect" ), HttpStatus.CONFLICT );
+        if ( !user.getPassword().equals( password ) || !user.getRole().toString().equals( role ) ) {
+            return new ResponseEntity( errorResponse( "Invalid LogIn Credentials" ), HttpStatus.CONFLICT );
         }
 
         return new ResponseEntity( successResponse( "Correct login details!" ), HttpStatus.OK );

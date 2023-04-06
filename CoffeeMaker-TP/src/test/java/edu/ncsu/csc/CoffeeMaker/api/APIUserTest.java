@@ -128,16 +128,20 @@ class APIUserTest {
         userService.save( newUser );
 
         // Test case 1: valid username and password
-        mvc.perform( get( "/api/v1/users/user1/password/" ) ).andExpect( status().isOk() )
+        mvc.perform( get( "/api/v1/users/user1/password/CUSTOMER" ) ).andExpect( status().isOk() )
                 .andExpect( jsonPath( "$.message" ).value( "Correct login details!" ) );
 
         // Test case 2: invalid username
-        mvc.perform( get( "/api/v1/users/nonexistentuser/password" ) ).andExpect( status().isNotFound() )
+        mvc.perform( get( "/api/v1/users/nonexistentuser/password/CUSTOMER" ) ).andExpect( status().isNotFound() )
                 .andExpect( jsonPath( "$.message" ).value( "User with the username nonexistentuser not found" ) );
 
         // Test case 3: invalid password
-        mvc.perform( get( "/api/v1/users/user1/notpassword/" ) ).andExpect( status().isConflict() )
-                .andExpect( jsonPath( "$.message" ).value( "The password was incorrect" ) );
+        mvc.perform( get( "/api/v1/users/user1/notpassword/CUSTOMER" ) ).andExpect( status().isConflict() )
+                .andExpect( jsonPath( "$.message" ).value( "Invalid LogIn Credentials" ) );
+
+        // Test case 3: invalid role
+        mvc.perform( get( "/api/v1/users/user1/notpassword/STAFF" ) ).andExpect( status().isConflict() )
+                .andExpect( jsonPath( "$.message" ).value( "Invalid LogIn Credentials" ) );
     }
 
 }
