@@ -5,7 +5,7 @@ Application
 --
 --
 _+main(args:String[]) : void_
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>144</x><y>0</y><w>1575</w><h>621</h></coordinates><panel_attributes>edu.ncsu.csc.CoffeeMaker.controllers
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>144</x><y>0</y><w>1575</w><h>567</h></coordinates><panel_attributes>edu.ncsu.csc.CoffeeMaker.controllers
 --
 bg=cyan</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>909</x><y>306</y><w>243</w><h>126</h></coordinates><panel_attributes>&lt;&lt;Java Class&gt;&gt;
 APIRecipeController
