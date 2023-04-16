@@ -90,6 +90,18 @@ abstract public class Service <T extends DomainObject, K> {
     }
 
     /**
+     * Deletes an object from the database. This will remove the object from the
+     * database, but not from memory. Trying to save it again after deletion is
+     * undefined behaviour. YMMV.
+     *
+     * @param obj
+     *            The object to delete from the database.
+     */
+    public void deleteById ( final K id ) {
+        getRepository().deleteById(id);;
+    }
+
+    /**
      * Removes all records of a given type from the database. For example,
      * `UserService.deleteAll()` would delete all Users. Be very careful when
      * calling this.
@@ -142,6 +154,8 @@ abstract public class Service <T extends DomainObject, K> {
      * @return The found object, null if none
      */
     public T findById ( final K id ) {
+    	System.out.println("------||||||||-----");
+    	System.out.println(id);
         if ( null == id ) {
             return null;
         }
