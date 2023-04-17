@@ -1,6 +1,5 @@
 package edu.ncsu.csc.CoffeeMaker.models;
 
-
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -13,7 +12,9 @@ import javax.persistence.ManyToOne;
 import edu.ncsu.csc.CoffeeMaker.models.status.Status;
 
 /**
- * 
+ * Class containing the orders of customers that holds a recipe and the order's
+ * status
+ *
  * @author Meles Meles
  *
  */
@@ -21,78 +22,122 @@ import edu.ncsu.csc.CoffeeMaker.models.status.Status;
 public class CustomerOrder extends DomainObject {
 
     /** Recipe id */
-    @Id 
+    @Id
     @GeneratedValue
-    private Long             id;
+    private Long   id;
 
     /** Recipe name */
     @ManyToOne
-    private Recipe           recipe;
-    
+    private Recipe recipe;
+
     /**
      * The role of the user (either CUSTOMER or STAFF)
      */
     @Enumerated ( EnumType.STRING )
-    private Status   orderStatus;
+    private Status orderStatus;
 
-    public CustomerOrder() {
-    	this.recipe = null;
-    	this.orderStatus = null;
+    /**
+     * CustomOrder constructor
+     */
+    public CustomerOrder () {
+        this.recipe = null;
+        this.orderStatus = null;
     }
 
-	public CustomerOrder(Recipe recipe, Status order_status) {
-		setRecipe(recipe);
-		setOrderStatus(order_status);
-	}
-	
-	
-	public Recipe getRecipe() {
-		return recipe;
-	}
+    /**
+     * CustomOrder constructor
+     *
+     */
+    public CustomerOrder ( final Recipe recipe, final Status order_status ) {
+        setRecipe( recipe );
+        setOrderStatus( order_status );
+    }
 
-	public void setRecipe(Recipe recipe) {
-		if(recipe == null) {
-			throw new IllegalArgumentException("Ordes Recipe can't be null");
-		}
-		this.recipe = recipe;
-	}
+    /**
+     * Returns the recipe connected to the order
+     *
+     * @return order recipe
+     */
+    public Recipe getRecipe () {
+        return recipe;
+    }
 
-	public Status getOrderStatus() {
-		return orderStatus;
-	}
+    /**
+     * Sets the recipe for the order
+     *
+     * @param recipe
+     *            recipe connected to the order
+     * @throws IAE
+     *             if the recipe is null
+     */
+    public void setRecipe ( final Recipe recipe ) {
+        if ( recipe == null ) {
+            throw new IllegalArgumentException( "Ordes Recipe can't be null" );
+        }
+        this.recipe = recipe;
+    }
 
-	public void setOrderStatus(Status orderStatus) {
-		if(orderStatus == null) {
-			throw new IllegalArgumentException("Ordes Status can't be null");
-		}
-		this.orderStatus = orderStatus;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public Long getId() {
-		return id;
-	}
+    /**
+     * Returns the order status
+     *
+     * @return the status of the order
+     */
+    public Status getOrderStatus () {
+        return orderStatus;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, orderStatus, recipe);
-	}
+    /**
+     * Sets the status of the order
+     *
+     * @param orderStatus
+     *            current status of the order
+     * @throws IAE
+     *             is the status is null
+     */
+    public void setOrderStatus ( final Status orderStatus ) {
+        if ( orderStatus == null ) {
+            throw new IllegalArgumentException( "Ordes Status can't be null" );
+        }
+        this.orderStatus = orderStatus;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CustomerOrder other = (CustomerOrder) obj;
-		return Objects.equals(id, other.id) && orderStatus == other.orderStatus && Objects.equals(recipe, other.recipe);
-	}
-	
-	
+    /**
+     * Sets the order id
+     *
+     * @param id
+     *            id of the order
+     */
+    public void setId ( final Long id ) {
+        this.id = id;
+    }
+
+    /**
+     * Returns the order id
+     */
+    @Override
+    public Long getId () {
+        return id;
+    }
+
+    @Override
+    public int hashCode () {
+        return Objects.hash( id, orderStatus, recipe );
+    }
+
+    @Override
+    public boolean equals ( final Object obj ) {
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
+        final CustomerOrder other = (CustomerOrder) obj;
+        return Objects.equals( id, other.id ) && orderStatus == other.orderStatus
+                && Objects.equals( recipe, other.recipe );
+    }
 
 }
