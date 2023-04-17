@@ -1,5 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.models;
 
+import java.util.Objects;
+
 public class Order {
     Long   id;
     String ownerName;
@@ -63,15 +65,27 @@ public class Order {
 
     @Override
     public String toString () {
-        return "";
+        return ownerName + ": " + recipeOrdered.getName();
     }
 
     public int hashcode () {
-        return 0;
+        return Objects.hash( status, amountPaid, recipeOrdered, ownerName, id );
     }
 
     @Override
     public boolean equals ( final Object obj ) {
-        return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
+        final Order other = (Order) obj;
+        return Objects.equals( ownerName, other.ownerName ) && Objects.equals( id, other.id )
+                && Objects.equals( recipeOrdered, other.recipeOrdered )
+                && Objects.equals( amountPaid, other.amountPaid );
     }
 }

@@ -1,5 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Orders {
@@ -7,7 +8,7 @@ public class Orders {
     List<Order> orders;
 
     public Orders () {
-        orders = null;
+        orders = new ArrayList<Order>();
     }
 
     public Orders ( final List<Order> orders ) {
@@ -55,16 +56,15 @@ public class Orders {
 
     @Override
     public String toString () {
-        return "";
+        final StringBuffer buf = new StringBuffer();
+        for ( int i = 0; i < orders.size(); i++ ) {
+            final Order tempOrder = orders.get( i );
+            buf.append( tempOrder.getOwnerName() );
+            buf.append( ": " );
+            buf.append( tempOrder.getRecipeOrdered().getName() );
+            buf.append( "\n" );
+        }
+        return buf.toString();
     }
 
-    @Override
-    public int hashCode () {
-        return 0;
-    }
-
-    @Override
-    public boolean equals ( final Object obj ) {
-        return false;
-    }
 }
