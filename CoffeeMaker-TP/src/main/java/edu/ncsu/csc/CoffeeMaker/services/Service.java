@@ -154,8 +154,6 @@ abstract public class Service <T extends DomainObject, K> {
      * @return The found object, null if none
      */
     public T findById ( final K id ) {
-    	System.out.println("------||||||||-----");
-    	System.out.println(id);
         if ( null == id ) {
             return null;
         }
