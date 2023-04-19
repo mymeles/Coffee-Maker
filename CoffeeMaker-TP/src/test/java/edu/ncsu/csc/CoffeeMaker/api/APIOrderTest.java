@@ -158,58 +158,67 @@ public class APIOrderTest {
 	@Transactional
 	public void testApiPlaceOrders() throws Exception {
 		final List<User> ursList = userService.getAllUsers();
-		for (int i = 0; i < ursList.size(); i++) {
-			System.out.println(ursList.get(i).getId());
-		}
-
-		// chceck for payment requirement
-		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 0)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord1)))
+		final List<Recipe> recipeList = rService.findAll();
+		assertEquals(recipeList.size(), 3);
+		// paymemt required error check 
+		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 0 + "/" + recipeList.get(0).getName())
+				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isPaymentRequired());
+		
+		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 5 + "/" + recipeList.get(0).getName())
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+		
 
-		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord1)))
+		mvc.perform(post("/api/v1/orders/" + ursList.get(1).getUsername() + "/" + 5 + "/" + recipeList.get(1).getName())
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+		
+
+		mvc.perform(post("/api/v1/orders/" + ursList.get(2).getUsername() + "/" + 5 + "/" + recipeList.get(2).getName())
+				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
-		mvc.perform(post("/api/v1/orders/" + ursList.get(1).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord2)))
-				.andExpect(status().isOk());
-
-		mvc.perform(post("/api/v1/orders/" + ursList.get(2).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord3)))
-				.andExpect(status().isOk());
 
 		assertEquals(3, orderService.count());
 
 		// Check for Users with orders alreadu existing
-		mvc.perform(post("/api/v1/orders/" + ursList.get(2).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord3)))
+		mvc.perform(post("/api/v1/orders/" + ursList.get(2).getUsername() + "/" + 5 + "/" + recipeList.get(2).getName())
+				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict());
 
 		// check with invalid user names
-		mvc.perform(post("/api/v1/orders/" + "fake/" + 5).contentType(MediaType.APPLICATION_JSON)
-				.content(TestUtils.asJsonString(ord3))).andExpect(status().isNotFound());
-
+		mvc.perform(post("/api/v1/orders/" + "fake" + "/" + 5 + "/" + recipeList.get(2).getName())
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+		
+		mvc.perform(post("/api/v1/orders/" + ursList.get(2).getUsername() + "/" + 5 + "/" + "recipe")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
 	@Transactional
 	public void testApiGetOrders() throws Exception {
 		final List<User> ursList = userService.getAllUsers();
+		final List<Recipe> recipeList = rService.findAll();
+		assertEquals(recipeList.size(), 3);
 		for (int i = 0; i < ursList.size(); i++) {
 			System.out.println(ursList.get(i).getId());
 		}
 
-		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord1)))
+		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 5 + "/" + recipeList.get(0).getName())
+				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
+		
 
-		mvc.perform(post("/api/v1/orders/" + ursList.get(1).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord2)))
+		mvc.perform(post("/api/v1/orders/" + ursList.get(1).getUsername() + "/" + 5 + "/" + recipeList.get(1).getName())
+				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
+		
 
-		mvc.perform(post("/api/v1/orders/" + ursList.get(2).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord3)))
+		mvc.perform(post("/api/v1/orders/" + ursList.get(2).getUsername() + "/" + 5 + "/" + recipeList.get(2).getName())
+				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
 		assertEquals(3, orderService.count());
@@ -225,10 +234,16 @@ public class APIOrderTest {
 	@Transactional
 	public void testApiCompleteOrder() throws Exception {
 		final List<User> ursList = userService.getAllUsers();
+		final List<Recipe> recipeList = rService.findAll();
+		assertEquals(recipeList.size(), 3);
+		for (int i = 0; i < ursList.size(); i++) {
+			System.out.println(ursList.get(i).getId());
+		}
 
-		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord1)))
+		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 5 + "/" + recipeList.get(0).getName())
+				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
+		
 		final List<User> ursList1 = userService.getAllUsers();
 
 		// Now all the orders are in for the users
@@ -263,9 +278,11 @@ public class APIOrderTest {
 	@Transactional
 	public void testApiPickUpOrder() throws Exception {
 		final List<User> ursList = userService.getAllUsers();
+		final List<Recipe> recipeList = rService.findAll();
+		assertEquals(recipeList.size(), 3);
 		// order is placed
-		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord1)))
+		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 5 + "/" + recipeList.get(0).getName())
+				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
 		// Now all the orders are in for the users
@@ -290,21 +307,26 @@ public class APIOrderTest {
 	@Transactional
 	public void testApiGetOrder() throws Exception {
 		final List<User> ursList = userService.getAllUsers();
+		final List<Recipe> recipeList = rService.findAll();
+		assertEquals(recipeList.size(), 3);
 		for (int i = 0; i < ursList.size(); i++) {
 			System.out.println(ursList.get(i).getId());
 		}
 
-		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord1)))
+		mvc.perform(post("/api/v1/orders/" + ursList.get(0).getUsername() + "/" + 5 + "/" + recipeList.get(0).getName())
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+		
+
+		mvc.perform(post("/api/v1/orders/" + ursList.get(1).getUsername() + "/" + 5 + "/" + recipeList.get(1).getName())
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+		
+
+		mvc.perform(post("/api/v1/orders/" + ursList.get(2).getUsername() + "/" + 5 + "/" + recipeList.get(2).getName())
+				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
-		mvc.perform(post("/api/v1/orders/" + ursList.get(1).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord2)))
-				.andExpect(status().isOk());
-
-		mvc.perform(post("/api/v1/orders/" + ursList.get(2).getUsername() + "/" + 5)
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(ord3)))
-				.andExpect(status().isOk());
 
 		assertEquals(3, orderService.count());
 		
