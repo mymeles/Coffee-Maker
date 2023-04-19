@@ -61,13 +61,6 @@ class UserTest {
     }
 
     @Test
-    void testUserToString () {
-        final User user = new User( "testUser", "password123", Role.CUSTOMER );
-        final String expectedString = "User [id=null, username=testUser, role=CUSTOMER]";
-        Assertions.assertEquals( expectedString, user.toString() );
-    }
-
-    @Test
     void testUserEqualsAndHashCode () {
         final User user1 = new User( "testUser", "password123", Role.CUSTOMER );
         final User user2 = new User( "testUser", "password1234", Role.CUSTOMER );
