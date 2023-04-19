@@ -34,35 +34,117 @@
 						});
 
 			}
+		$scope.createOrder = function() {
+			console.log($scope.recipes)
+			$scope.success = false;
+			$scope.failure = false;
+
+			$http.post("/api/v1/orders", $scope.user).then(
+				function(success) {
+					$scope.success = true;
+					$scope.failure = false;
+				}, 
+				function(rejection) {
+					$scope.failure = true;
+					$scope.success = false;
+					console.error("Error while placing order");
+					if (rejection.status == 404) {
+                console.error("Error 404: Customer not found");
+                $scope.failure = true;
+            }
+					else if (rejection.status == 409) {
+                console.error("Error 409: Customer already has an order");
+                $scope.failure = true;
+            }
+			else if (rejection.status == 402) {
+                console.error("Error 402: Insufficient payment amount");
+                $scope.failure = true;
+            }
+				}
+			);
+		};
 		});
 
 		/*]]>*/
 	</script>
 
-	<div layout:fragment="content" class="generic-container ng-cloak"
-		ng-app="myApp" ng-controller="recipesCtrl">
-		<h1>Coffee Recipes</h1>
-		<div>
-			<ul>
-				<li ng-repeat="recipe in recipes"><label>{{recipe.name}}
-						<input type="radio" ng-model="$parent.name" name="name"
-						value="{{recipe.name}}" required="true" />
-				</label></li>
-			</ul>
-			<br /> <label for="amtPaid">Enter payment</label> <input type="text"
-				ng-model="amtPaid" name="amtPaid" required="true" /> <br /> <input
-				type="submit" ng-click="make()" value="Make Coffee"
-				class="btn btn-primary btn-sm" /> <br />
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Coffee Recipes</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta ingredientName="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/bootstrap.css" />
+	<link rel="stylesheet" href="css/app.css" />
+	<style>
+		.button {
+			display: inline-block;
+			padding: 5px 6px;
+			font-size: 12px;
+			font-weight: normal;
+			text-align: center;
+			text-decoration: none;
+			background-color: #fff;
+			color: #000;
+			border-radius: 1px;
+			box-shadow: 0 2px 5px rgba(0,0,0,.3);
+			margin-right: 20px;
+		}
 
-			<div ng-show="submissionSuccess" class="success">Coffee was
-				made. Your change is {{change}}.</div>
+		.center {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+		
+		.link{
+			float: right;
+		}
+	</style>
+</head>
 
-			<div ng-show="submissionFailure">An error occurred: {{error}}</div>
+<body>
+	<div ng-app="myApp" class="generic-container ng-cloak" ng-controller="recipesCtrl">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="lead">Beverage Order</span>
+				<a class="link" href="/index" style="margin-right: 10px;">Sign Out</a>
+			</div>
 
-			<br /> <a href="/customerMenu">Home</a><br><br><a href="/index">Sign Out</a>
+			<div class="formcontainer">
+				<div class="row">
+					<div class="form-group col-md-12">
+						<div class="left">
+							<h5>Select a Recipe</h5>
+							<ul>
+								<li ng-repeat="recipe in recipes">
+									<label>
+										{{recipe.name}}
+										<input type="radio" ng-model="$parent.name" name="name" value="{{recipe.name}}" required="true" />
+										
+									</label>
+									<br/>
+									<label style="text-align: right;">
+										Price: ${{recipe.price}}
+									  </label>
+									
+								</li>
+							</ul>
+							<br />
+							<label for="amtPaid">Enter payment</label>
+							<input type="text" ng-model="amtPaid" name="amtPaid" required="true" />
+							<br />
+							<a href="#" class="button" ng-click="make()" ng-disabled="!name || !amtPaid">Place Order</a>
+							<br />
+							<br />
+							<div ng-show="submissionSuccess" class="success">Coffee was made. Your change is {{change}}.</div>
+							<div ng-show="submissionFailure">An error occurred: Insuffient Funds or Item out of stock</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<a href="/customerMenu">Home</a>
 		</div>
-
 	</div>
-
-</body>
-</html>

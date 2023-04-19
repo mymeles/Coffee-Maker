@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Customer Menu</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<style>
+		.button {
+			display: inline-block;
+			padding: 5px 6px;
+			font-size: 12px;
+			font-weight: normal;
+			text-align: center;
+			text-decoration: none;
+			background-color: #fff;
+			color: #000;
+			border-radius: 1px;
+			box-shadow: 0 2px 5px rgba(0,0,0,.3);
+			margin-right: 20px;
+		}
+
+		.center {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+		
+		.link{
+		float: right;
+		}
+		
+	</style>
+        <meta charset="utf-8">
+        <meta ingredientName="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+
+
+    <div ng-app="myApp" class="generic-container ng-cloak"
+      ng-controller="addIngredientCtrl as ctrl">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="lead">Order Status</span>
+          <a class="link" href="/index" style="margin-right: 10px;">Sign Out</a>
+        </div>    
+          
+        <div class="formcontainer">
+          <div class="row">
+            <div class="form-group col-md-12">
+              <div class="left">
+
+                <h5> Orders Ready For Pick-Up</h5>
+                <ol>
+								<li ng-repeat="recipe in recipes">
+									<label>
+										{{recipe.name}}
+										<input type="radio" ng-model="$parent.name" name="name" value="{{recipe.name}}" required="true" />
+										
+									</label>
+									<br/>
+									
+									
+								</li>
+							</ol>
+                            <br/><br/>
+                            <a href="#" class="button" ng-click="make()" ng-disabled="!name || !amtPaid">Pick-Up Order</a>           
+                <div ng-show="submissionSuccess" class="success">Order Was Picked-Up Succesfully</div>
+                <div ng-show="submissionFailure">An error occurred: No Orders Exist or Order Not Selected</div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <a href="/customerMenu">Home</a>
+      </div>
+    </div>
+  </body>
+  
+</html> 
