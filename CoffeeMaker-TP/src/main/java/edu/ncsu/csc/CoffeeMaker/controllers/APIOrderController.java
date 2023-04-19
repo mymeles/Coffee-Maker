@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.CustomerOrder;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
+import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.models.User;
 import edu.ncsu.csc.CoffeeMaker.models.status.Status;
 import edu.ncsu.csc.CoffeeMaker.services.CustomerOrderService;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
+import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 import edu.ncsu.csc.CoffeeMaker.services.UserService;
 
 /**
@@ -55,6 +57,13 @@ public class APIOrderController extends APIController {
      */
     @Autowired
     private UserService          userService;
+    
+    /**
+     * recipeService object, to be autowired in by Spring to allow for
+     * manipulating the recipe model
+     */
+    @Autowired
+    private RecipeService          recipeService;
 
     /**
      * REST API method to provide GET access to all customer orders in the
@@ -96,12 +105,20 @@ public class APIOrderController extends APIController {
      *            customer order
      * @return response to the request
      */
-    @PostMapping ( BASE_PATH + "/orders/{name}/{amt}" )
+    @PostMapping ( BASE_PATH + "/orders/{name}/{amt}/{recipe_name}" )
     public ResponseEntity placeOrder ( @PathVariable final String name, @PathVariable final int amt,
-            @RequestBody final CustomerOrder ord ) {
+    		@PathVariable String recipe_name ) {
+    	final Recipe r = recipeService.findByName(recipe_name);
         final User usr = userService.findByUsername( name );
-        if ( usr == null ) {
+        if ( usr == null ) { 
+        	System.out.println("Check user --------- " + name +  " " + recipe_name );
             return new ResponseEntity( errorResponse( "Customer with the name " + name + " does not exist" ),
+                    HttpStatus.NOT_FOUND );
+        }
+        
+        if ( r == null ) { 
+        	System.out.println("Check recipe --------- " + name +  " " + recipe_name );
+            return new ResponseEntity( errorResponse( "Recipe with the name " + recipe_name + " does not exist" ),
                     HttpStatus.NOT_FOUND );
         }
         // Now handle a customer with an order and if there exits then return a
@@ -111,14 +128,14 @@ public class APIOrderController extends APIController {
                     HttpStatus.CONFLICT );
         }
         // handle the money and make sure it is enough
-        if ( amt < ord.getRecipe().getPrice() ) {
+        if ( amt < r.getPrice() ) {
             return new ResponseEntity( errorResponse( "Inssufficent amount" ), HttpStatus.PAYMENT_REQUIRED );
         }
         else {
-            usr.setCustomerOrder( ord );
+            usr.setCustomerOrder( new CustomerOrder(r, Status.Order_Placed) );
             userService.save( usr );
             return new ResponseEntity<String>(
-                    successResponse( String.valueOf( amt - ( ord.getRecipe().getPrice() ) ) ), HttpStatus.OK );
+                    successResponse( String.valueOf( amt - ( r.getPrice() ) ) ), HttpStatus.OK );
         }
     }
 
