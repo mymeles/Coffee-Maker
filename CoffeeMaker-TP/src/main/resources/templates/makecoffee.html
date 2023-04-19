@@ -18,12 +18,27 @@
 				$scope.recipes = response.data;
 			});
 
+			$scope.order = {
+					ownerName : '',
+					recipeOrdered : '',
+					amountPaid : 0,
+					status : ''
+			};
+			$scope.reset = function() {
+				$scope.order.ownerName = 'user';
+				$scope.order.recipeOrdered = '';
+				$scope.order.amountPaid = 0;
+				$scope.order.status = 'pending';
+			}
+			
 			$scope.make = function() {
-				var amtPaid = $scope.amtPaid;
-				var name = $scope.name;
+				$scope.reset();
+				$scope.order.recipeOrdered = $scope.name;
+				$scope.order.amountPaid = $scope.amtPaid;
 				$scope.submissionFailure = false;
 				$scope.submissionSuccess = false;
-				$http.post("/api/v1/makecoffee/" + name, amtPaid).then(
+				
+				$http.post("/api/v1/orders/", $scope.order).then(
 						function(response) {
 							$scope.change = response.data.message;
 							$scope.submissionSuccess = true;
@@ -34,35 +49,6 @@
 						});
 
 			}
-		$scope.createOrder = function() {
-			console.log($scope.recipes)
-			$scope.success = false;
-			$scope.failure = false;
-
-			$http.post("/api/v1/orders", $scope.user).then(
-				function(success) {
-					$scope.success = true;
-					$scope.failure = false;
-				}, 
-				function(rejection) {
-					$scope.failure = true;
-					$scope.success = false;
-					console.error("Error while placing order");
-					if (rejection.status == 404) {
-                console.error("Error 404: Customer not found");
-                $scope.failure = true;
-            }
-					else if (rejection.status == 409) {
-                console.error("Error 409: Customer already has an order");
-                $scope.failure = true;
-            }
-			else if (rejection.status == 402) {
-                console.error("Error 402: Insufficient payment amount");
-                $scope.failure = true;
-            }
-				}
-			);
-		};
 		});
 
 		/*]]>*/
@@ -139,7 +125,7 @@
 							<br />
 							<br />
 							<div ng-show="submissionSuccess" class="success">Coffee was made. Your change is {{change}}.</div>
-							<div ng-show="submissionFailure">An error occurred: Insuffient Funds or Item out of stock</div>
+							<div ng-show="submissionFailure">An error occurred: Insufficient Funds or Item out of stock.: {{order.ownerName}}, {{order.recipeOrdered}}, {{order.amountPaid}}, {{order.status}}</div>
 						</div>
 					</div>
 				</div>

@@ -50,8 +50,9 @@
 			<div class="center">
 		<a href="#" class="button" onclick="viewOrders()">View Orders</a>
 		<br/>
-		<br/>
 		<a href="#" class="button" onclick="addRecipe()">Add Recipe</a>
+		<br/>
+		<a href="#" class="button" onclick="editRecipe()">Edit Recipe</a>
 		<br />
 		<a href="#" class="button" onclick="addIngredient()">Add Ingredient</a>
 		<br />
@@ -69,6 +70,11 @@
 		function addRecipe() {
 			var recipeLink = "recipe.html";
 			window.location.href = recipeLink;
+		}
+		
+		function editRecipe() {
+			var editLink = "editrecipe.html";
+			window.location.href = editLink;
 		}
 		
 		function addIngredient() {
