@@ -131,8 +131,9 @@ public class User extends DomainObject {
      * This method checks if the password from the user and encoded passwords
      * are similar
      *
-     * @oaram plaintext the plaintext passcode that needs to be checked against
-     *        the encryped password
+     * @param plaintext
+     *            the plaintext passcode that needs to be checked against the
+     *            encryped password
      *
      * @return true if the passwords match, false if not
      */
