@@ -277,7 +277,7 @@ public class CustomerOrderTest {
             fail();
         }
         catch ( final IllegalArgumentException e ) {
-            assertEquals( e.getMessage(), "Ordes Status can't be null" );
+            assertEquals( e.getMessage(), "Order's status can't be null" );
         }
 
     }
