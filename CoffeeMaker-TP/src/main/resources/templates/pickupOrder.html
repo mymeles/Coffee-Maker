@@ -1,9 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>View Recipes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<body>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		var app = angular.module('myApp', []);
+		app.controller('recipesCtrl', function($scope, $http, $q) {
+			$http.get("/api/v1/recipes").then(function(response) {
+				$scope.recipes = response.data;
+			});
+
+			$scope.order = {
+					ownerName : sessionStorage.getItem('username'),
+					recipeOrdered : '',
+					amountPaid : 0,
+					status : 'pending'
+			};
+			
+			$scope.reset = function() {
+				$scope.order.ownerName = sessionStorage.getItem('username');
+				$scope.order.recipeOrdered = '';
+				$scope.order.amountPaid = 0;
+				$scope.order.status = 'pending';
+			}
+			
+			$scope.make = function() {
+				$scope.reset();
+				$scope.order.recipeOrdered = $scope.name;
+				$scope.order.amountPaid = $scope.amtPaid;
+				$scope.submissionFailure = false;
+				$scope.submissionSuccess = false;
+				
+				$http.post("/api/v1/orders/" + $scope.order.ownerName + "/" + $scope.order.amountPaid + "/" + $scope.order.recipeOrdered).then(
+						function(response) {
+							$scope.change = response.data.message;
+							$scope.submissionSuccess = true;
+						}, function(errResponse) {
+							console.log(errResponse);
+							$scope.submissionFailure = true;
+							$scope.error = "Error while making recipe";
+						});
+
+			}
+		});
+
+		/*]]>*/
+	</script>
+
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Customer Menu</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<style>
+	<title>Coffee Recipes</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta ingredientName="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/bootstrap.css" />
+	<link rel="stylesheet" href="css/app.css" />
+	<style>
 		.button {
 			display: inline-block;
 			padding: 5px 6px;
@@ -26,31 +86,20 @@
 		}
 		
 		.link{
-		float: right;
+			float: right;
 		}
-		
 	</style>
-        <meta charset="utf-8">
-        <meta ingredientName="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="css/bootstrap.css" />
-<link rel="stylesheet" href="css/app.css" />
 </head>
 
 <body>
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+	<div ng-app="myApp" class="generic-container ng-cloak" ng-controller="recipesCtrl">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="lead">Order Status</span>
+				<a class="link" href="/index" style="margin-right: 10px;">Sign Out</a>
+			</div>
 
-
-
-    <div ng-app="myApp" class="generic-container ng-cloak"
-      ng-controller="addIngredientCtrl as ctrl">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <span class="lead">Order Status</span>
-          <a class="link" href="/index" style="margin-right: 10px;">Sign Out</a>
-        </div>    
-          
-        <div class="formcontainer">
+			<div class="formcontainer">
           <div class="row">
             <div class="form-group col-md-12">
               <div class="left">
@@ -75,11 +124,7 @@
               </div>
             </div>
           </div>
-        </div>
-  
-        <a href="/customerMenu">Home</a>
-      </div>
-    </div>
-  </body>
-  
-</html> 
+
+			<a href="/customerMenu">Home</a>
+		</div>
+	</div>
