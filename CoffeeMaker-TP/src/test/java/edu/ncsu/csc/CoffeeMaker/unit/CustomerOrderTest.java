@@ -1,6 +1,5 @@
 package edu.ncsu.csc.CoffeeMaker.unit;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -52,8 +51,6 @@ public class CustomerOrderTest {
     CustomerOrder                ord2;
     CustomerOrder                ord3;
 
-    // @Autowired
-    // final IngredientService ingredientService = new IngredientService();
     /**
      * Deletes recipes in db
      */
@@ -130,28 +127,28 @@ public class CustomerOrderTest {
     public void testOrderPresistance () {
         final User u = userService.findByUsername( "usr3" );
         assertEquals( "usr3", u.getUsername() );
-        List<User> usr = userService.findAll();
+        final List<User> usr = userService.findAll();
         assertEquals( 3, usr.size() );
 
-        usr.get( 0 ).setCustomerOrder( ord1 );
-        usr.get( 1 ).setCustomerOrder( ord2 );
-        usr.get( 2 ).setCustomerOrder( ord3 );
+        // Set the unique username of the user for each CustomerOrder object
+        ord1.setOrderOwner( usr.get( 0 ).getUsername() );
+        ord2.setOrderOwner( usr.get( 1 ).getUsername() );
+        ord3.setOrderOwner( usr.get( 2 ).getUsername() );
 
-        userService.save( usr.get( 0 ) );
-        userService.save( usr.get( 1 ) );
-        userService.save( usr.get( 2 ) );
+        // Save the orders
+        orderService.save( ord1 );
+        orderService.save( ord2 );
+        orderService.save( ord3 );
 
-        usr = userService.findAll();
-        assertEquals( 3, usr.size() );
         assertEquals( 3, orderService.count() );
         final List<CustomerOrder> listOrd = orderService.findAll();
         assertEquals( 3, listOrd.size() );
-        assertEquals( usr.get( 0 ).getCustomerOrder().getRecipe(), "Black Coffee" );
-        assertEquals( usr.get( 1 ).getCustomerOrder().getRecipe(), "Mocha" );
-        assertEquals( usr.get( 2 ).getCustomerOrder().getRecipe(), "MilkShake" );
-        assertEquals( usr.get( 0 ).getCustomerOrder().getOrderStatus(), Status.Order_Placed );
-        assertEquals( usr.get( 1 ).getCustomerOrder().getOrderStatus(), Status.Order_Placed );
-        assertEquals( usr.get( 2 ).getCustomerOrder().getOrderStatus(), Status.Order_Placed );
+        assertEquals( listOrd.get( 0 ).getRecipe(), "Black Coffee" );
+        assertEquals( listOrd.get( 1 ).getRecipe(), "Mocha" );
+        assertEquals( listOrd.get( 2 ).getRecipe(), "MilkShake" );
+        assertEquals( listOrd.get( 0 ).getOrderStatus(), Status.Order_Placed );
+        assertEquals( listOrd.get( 1 ).getOrderStatus(), Status.Order_Placed );
+        assertEquals( listOrd.get( 2 ).getOrderStatus(), Status.Order_Placed );
 
     }
 
@@ -161,102 +158,140 @@ public class CustomerOrderTest {
     @Test
     @Transactional
     public void testCustomerOrderStatusChange () {
+        final List<CustomerOrder> orders = orderService.findAll();
+        assertEquals( 0, orders.size() );
         List<User> usr = userService.findAll();
         assertEquals( 3, usr.size() );
 
-        usr.get( 0 ).setCustomerOrder( ord1 );
-        usr.get( 1 ).setCustomerOrder( ord2 );
-        usr.get( 2 ).setCustomerOrder( ord3 );
+        // Set the unique username of the user for each CustomerOrder object
+        ord1.setOrderOwner( usr.get( 0 ).getUsername() );
+        ord2.setOrderOwner( usr.get( 1 ).getUsername() );
+        ord3.setOrderOwner( usr.get( 2 ).getUsername() );
 
-        userService.save( usr.get( 0 ) );
-        userService.save( usr.get( 1 ) );
-        userService.save( usr.get( 2 ) );
+        // Save the orders
+        orderService.save( ord1 );
+        orderService.save( ord2 );
+        orderService.save( ord3 );
 
         usr = userService.findAll();
         assertEquals( 3, usr.size() );
         assertEquals( 3, orderService.count() );
-        assertEquals( usr.get( 0 ).getCustomerOrder().getRecipe(), "Black Coffee" );
-        assertEquals( usr.get( 1 ).getCustomerOrder().getRecipe(), "Mocha" );
-        assertEquals( usr.get( 2 ).getCustomerOrder().getRecipe(), "MilkShake" );
-        assertEquals( usr.get( 0 ).getCustomerOrder().getOrderStatus(), Status.Order_Placed );
-        assertEquals( usr.get( 1 ).getCustomerOrder().getOrderStatus(), Status.Order_Placed );
-        assertEquals( usr.get( 2 ).getCustomerOrder().getOrderStatus(), Status.Order_Placed );
 
         final List<CustomerOrder> listOrd = orderService.findAll();
+        assertEquals( 3, listOrd.size() );
+
+        assertEquals( listOrd.get( 0 ).getRecipe(), "Black Coffee" );
+        assertEquals( listOrd.get( 1 ).getRecipe(), "Mocha" );
+        assertEquals( listOrd.get( 2 ).getRecipe(), "MilkShake" );
+        assertEquals( listOrd.get( 0 ).getOrderStatus(), Status.Order_Placed );
+        assertEquals( listOrd.get( 1 ).getOrderStatus(), Status.Order_Placed );
+        assertEquals( listOrd.get( 2 ).getOrderStatus(), Status.Order_Placed );
+
         listOrd.get( 0 ).setOrderStatus( Status.Order_Completed );
         listOrd.get( 1 ).setOrderStatus( Status.Order_Completed );
         listOrd.get( 2 ).setOrderStatus( Status.Order_Completed );
 
         orderService.saveAll( listOrd );
         assertEquals( 3, orderService.count() );
-        usr = userService.findAll();
-        assertEquals( usr.get( 0 ).getCustomerOrder().getRecipe(), "Black Coffee" );
-        assertEquals( usr.get( 1 ).getCustomerOrder().getRecipe(), "Mocha" );
-        assertEquals( usr.get( 2 ).getCustomerOrder().getRecipe(), "MilkShake" );
-        assertEquals( usr.get( 0 ).getCustomerOrder().getOrderStatus(), Status.Order_Completed );
-        assertEquals( usr.get( 1 ).getCustomerOrder().getOrderStatus(), Status.Order_Completed );
-        assertEquals( usr.get( 2 ).getCustomerOrder().getOrderStatus(), Status.Order_Completed );
+
+        assertEquals( listOrd.get( 0 ).getRecipe(), "Black Coffee" );
+        assertEquals( listOrd.get( 1 ).getRecipe(), "Mocha" );
+        assertEquals( listOrd.get( 2 ).getRecipe(), "MilkShake" );
+        assertEquals( listOrd.get( 0 ).getOrderStatus(), Status.Order_Completed );
+        assertEquals( listOrd.get( 1 ).getOrderStatus(), Status.Order_Completed );
+        assertEquals( listOrd.get( 2 ).getOrderStatus(), Status.Order_Completed );
+
+        listOrd.get( 0 ).setOrderStatus( Status.Order_Completed );
+        listOrd.get( 1 ).setOrderStatus( Status.Order_Completed );
+        listOrd.get( 2 ).setOrderStatus( Status.Order_Completed );
+
+        orderService.saveAll( listOrd );
+        assertEquals( 3, orderService.count() );
+
+        assertEquals( listOrd.get( 0 ).getRecipe(), "Black Coffee" );
+        assertEquals( listOrd.get( 1 ).getRecipe(), "Mocha" );
+        assertEquals( listOrd.get( 2 ).getRecipe(), "MilkShake" );
+        assertEquals( listOrd.get( 0 ).getOrderStatus(), Status.Order_Completed );
+        assertEquals( listOrd.get( 1 ).getOrderStatus(), Status.Order_Completed );
+        assertEquals( listOrd.get( 2 ).getOrderStatus(), Status.Order_Completed );
+
+        listOrd.get( 0 ).setOrderStatus( Status.Order_Fulfilled );
+        listOrd.get( 1 ).setOrderStatus( Status.Order_Fulfilled );
+        listOrd.get( 2 ).setOrderStatus( Status.Order_Fulfilled );
+
+        orderService.saveAll( listOrd );
+        assertEquals( 3, orderService.count() );
+
+        assertEquals( listOrd.get( 0 ).getRecipe(), "Black Coffee" );
+        assertEquals( listOrd.get( 1 ).getRecipe(), "Mocha" );
+        assertEquals( listOrd.get( 2 ).getRecipe(), "MilkShake" );
+        assertEquals( listOrd.get( 0 ).getOrderStatus(), Status.Order_Fulfilled );
+        assertEquals( listOrd.get( 1 ).getOrderStatus(), Status.Order_Fulfilled );
+        assertEquals( listOrd.get( 2 ).getOrderStatus(), Status.Order_Fulfilled );
 
     }
 
     /**
-     * Tests adding a recipe
+     * Tests deleting a customer order
      */
     @Test
     @Transactional
     public void testCustomerOrderDeletion () {
+        final List<CustomerOrder> orders = orderService.findAll();
+        assertEquals( 0, orders.size() );
         List<User> usr = userService.findAll();
         assertEquals( 3, usr.size() );
 
-        usr.get( 0 ).setCustomerOrder( ord1 );
-        usr.get( 1 ).setCustomerOrder( ord2 );
-        usr.get( 2 ).setCustomerOrder( ord3 );
+        // Set the unique username of the user for each CustomerOrder object
+        ord1.setOrderOwner( usr.get( 0 ).getUsername() );
+        ord2.setOrderOwner( usr.get( 1 ).getUsername() );
+        ord3.setOrderOwner( usr.get( 2 ).getUsername() );
 
-        userService.save( usr.get( 0 ) );
-        userService.save( usr.get( 1 ) );
-        userService.save( usr.get( 2 ) );
+        // Save the orders
+        orderService.save( ord1 );
+        orderService.save( ord2 );
+        orderService.save( ord3 );
 
         usr = userService.findAll();
         assertEquals( 3, usr.size() );
         assertEquals( 3, orderService.count() );
-        assertEquals( usr.get( 0 ).getCustomerOrder().getRecipe(), "Black Coffee" );
-        assertEquals( usr.get( 1 ).getCustomerOrder().getRecipe(), "Mocha" );
-        assertEquals( usr.get( 2 ).getCustomerOrder().getRecipe(), "MilkShake" );
-        assertEquals( usr.get( 0 ).getCustomerOrder().getOrderStatus(), Status.Order_Placed );
-        assertEquals( usr.get( 1 ).getCustomerOrder().getOrderStatus(), Status.Order_Placed );
-        assertEquals( usr.get( 2 ).getCustomerOrder().getOrderStatus(), Status.Order_Placed );
 
         final List<CustomerOrder> listOrd = orderService.findAll();
-        listOrd.get( 0 ).setOrderStatus( Status.Order_Completed );
-        listOrd.get( 1 ).setOrderStatus( Status.Order_Completed );
-        listOrd.get( 2 ).setOrderStatus( Status.Order_Completed );
+        assertEquals( 3, listOrd.size() );
 
-        orderService.saveAll( listOrd );
-        assertEquals( 3, orderService.count() );
-        usr = userService.findAll();
-        assertEquals( usr.get( 0 ).getCustomerOrder().getRecipe(), "Black Coffee" );
-        assertEquals( usr.get( 1 ).getCustomerOrder().getRecipe(), "Mocha" );
-        assertEquals( usr.get( 2 ).getCustomerOrder().getRecipe(), "MilkShake" );
-        assertEquals( usr.get( 0 ).getCustomerOrder().getOrderStatus(), Status.Order_Completed );
-        assertEquals( usr.get( 1 ).getCustomerOrder().getOrderStatus(), Status.Order_Completed );
-        assertEquals( usr.get( 2 ).getCustomerOrder().getOrderStatus(), Status.Order_Completed );
+        assertEquals( listOrd.get( 0 ).getRecipe(), "Black Coffee" );
+        assertEquals( listOrd.get( 1 ).getRecipe(), "Mocha" );
+        assertEquals( listOrd.get( 2 ).getRecipe(), "MilkShake" );
+        assertEquals( listOrd.get( 0 ).getOrderStatus(), Status.Order_Placed );
+        assertEquals( listOrd.get( 1 ).getOrderStatus(), Status.Order_Placed );
+        assertEquals( listOrd.get( 2 ).getOrderStatus(), Status.Order_Placed );
 
         // Delete Customer order after it has been picked up.
-        userService.deleteCustomerOrder( usr.get( 0 ) );
+        orderService.delete( listOrd.get( 0 ) );
         assertEquals( 2, orderService.count() );
-        usr = userService.findAll();
-        assertNull( usr.get( 0 ).getCustomerOrder() );
 
-        userService.deleteCustomerOrder( usr.get( 1 ) );
+        listOrd.remove( 0 );
+        assertEquals( 2, listOrd.size() );
+
+        assertEquals( listOrd.get( 0 ).getRecipe(), "Mocha" );
+        assertEquals( listOrd.get( 1 ).getRecipe(), "MilkShake" );
+        assertEquals( listOrd.get( 0 ).getOrderStatus(), Status.Order_Placed );
+        assertEquals( listOrd.get( 1 ).getOrderStatus(), Status.Order_Placed );
+
+        orderService.delete( listOrd.get( 0 ) );
         assertEquals( 1, orderService.count() );
-        usr = userService.findAll();
-        assertNull( usr.get( 0 ).getCustomerOrder() );
 
-        userService.deleteCustomerOrder( usr.get( 2 ) );
+        listOrd.remove( 0 );
+        assertEquals( 1, listOrd.size() );
+
+        assertEquals( listOrd.get( 0 ).getRecipe(), "MilkShake" );
+        assertEquals( listOrd.get( 0 ).getOrderStatus(), Status.Order_Placed );
+
+        orderService.delete( listOrd.get( 0 ) );
         assertEquals( 0, orderService.count() );
-        usr = userService.findAll();
-        assertNull( usr.get( 0 ).getCustomerOrder() );
 
+        listOrd.remove( 0 );
+        assertEquals( 0, listOrd.size() );
     }
 
     @Test
