@@ -52,23 +52,5 @@ public class UserService extends Service<User, Long> {
     public User findByUsername ( final String username ) {
         return userRepository.findByUsername( username );
     }
-    
-    @Transactional
-    public User saveUser(User user) {
-        return userRepository.save(user);
-    }
-    
-    /**
-     * Find a recipe with the provided name
-     *
-     * @param name
-     *            Name of the recipe to find
-     * @return found recipe, null if none
-     */
-    public void deleteCustomerOrder ( User usr ) {
-    	usr.setCustomerOrder(null);
-    	userRepository.save(usr);
-    	userRepository.flush();
-    }
 
 }

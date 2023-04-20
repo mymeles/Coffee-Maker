@@ -175,6 +175,7 @@ public class APIOrderController extends APIController {
 
         final Recipe r = recipeService.findByName( recipe_name );
         final User usr = userService.findByUsername( name );
+
         if ( usr == null ) {
             System.out.println( "Check user --------- " + name );
             return new ResponseEntity( errorResponse( "Customer with the name " + name + " does not exist" ),
@@ -187,21 +188,13 @@ public class APIOrderController extends APIController {
                     HttpStatus.NOT_FOUND );
         }
 
-        // Now handle a customer with an order and if there exits then return a
-        // message
-        if ( usr.getCustomerOrder() != null ) {
-            return new ResponseEntity( errorResponse( "Customer can only place one order at a time " ),
-                    HttpStatus.CONFLICT );
-        }
-
         // handle the money and make sure it is enough
         if ( amt < r.getPrice() ) {
             return new ResponseEntity( errorResponse( "Insufficient amount" ), HttpStatus.PAYMENT_REQUIRED );
         }
         else {
             final CustomerOrder temp = new CustomerOrder( recipe_name, Status.Order_Placed, name );
-            usr.setCustomerOrder( temp );
-            userService.save( usr );
+            orderService.save( temp );
             return new ResponseEntity<String>( successResponse( String.valueOf( amt - ( r.getPrice() ) ) ),
                     HttpStatus.OK );
         }
