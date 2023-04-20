@@ -226,4 +226,18 @@ public class MappingController {
         return "customerMenu";
     }
 
+    /**
+     * Handles a GET request for the staff menu. The GET request provides a view
+     * to the client that includes options for staff members to view orders,
+     * manage inventory, and manage user accounts.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/pickupOrder", "/pickupOrder.html" } )
+    public String pickupOrderForm ( final Model model ) {
+        return "pickupOrder";
+    }
+
 }

@@ -95,16 +95,17 @@
 	<div ng-app="myApp" class="generic-container ng-cloak" ng-controller="recipesCtrl">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<span class="lead">Beverage Order</span>
+				<span class="lead">Order Status</span>
 				<a class="link" href="/index" style="margin-right: 10px;">Sign Out</a>
 			</div>
 
 			<div class="formcontainer">
-				<div class="row">
-					<div class="form-group col-md-12">
-						<div class="left">
-							<h5>Select a Recipe</h5>
-							<ul>
+          <div class="row">
+            <div class="form-group col-md-12">
+              <div class="left">
+
+                <h5> Orders Ready For Pick-Up</h5>
+                <ol>
 								<li ng-repeat="recipe in recipes">
 									<label>
 										{{recipe.name}}
@@ -112,25 +113,17 @@
 										
 									</label>
 									<br/>
-									<label style="text-align: right;">
-										Price: ${{recipe.price}}
-									  </label>
+									
 									
 								</li>
-							</ul>
-							<br />
-							<label for="amtPaid">Enter payment</label>
-							<input type="text" ng-model="amtPaid" name="amtPaid" required="true" />
-							<br />
-							<a href="#" class="button" ng-click="make()" ng-disabled="!name || !amtPaid">Place Order</a>
-							<br />
-							<br />
-							<div ng-show="submissionSuccess" class="success">Coffee was made. Your change is {{change}}.</div>
-							<div ng-show="submissionFailure">An error occurred: Insufficient Funds or Item out of stock.: {{order.ownerName}}, {{order.recipeOrdered}}, {{order.amountPaid}}, {{order.status}}</div>
-						</div>
-					</div>
-				</div>
-			</div>
+							</ol>
+                            <br/><br/>
+                            <a href="#" class="button" ng-click="make()" ng-disabled="!name || !amtPaid">Pick-Up Order</a>           
+                <div ng-show="submissionSuccess" class="success">Order Was Picked-Up Succesfully</div>
+                <div ng-show="submissionFailure">An error occurred: No Orders Exist or Order Not Selected</div>
+              </div>
+            </div>
+          </div>
 
 			<a href="/customerMenu">Home</a>
 		</div>
