@@ -127,9 +127,9 @@ public class APIOrderController extends APIController {
         }
 
         // determine if we can make the recipe
-        final boolean order_flag = fulfillOrderHelper( ord );
+        final boolean orderFlag = fulfillOrderHelper( ord );
 
-        if ( order_flag ) {
+        if ( orderFlag ) {
             ord.setOrderStatus( Status.Order_Fulfilled );
             orderService.save( ord );
             return new ResponseEntity<String>( successResponse( "Order fulfilled and ready for pick up!" ),
@@ -165,15 +165,15 @@ public class APIOrderController extends APIController {
      *            customer username
      * @param amt
      *            payment amount
-     * @param ord
-     *            customer order
+     * @param recipeName
+     *            the name of the recipe in the order
      * @return response to the request
      */
-    @PostMapping ( BASE_PATH + "/orders/{name}/{amt}/{recipe_name}" )
+    @PostMapping ( BASE_PATH + "/orders/{name}/{amt}/{recipeName}" )
     public ResponseEntity placeOrder ( @PathVariable final String name, @PathVariable final int amt,
-            @PathVariable final String recipe_name ) {
+            @PathVariable final String recipeName ) {
 
-        final Recipe r = recipeService.findByName( recipe_name );
+        final Recipe r = recipeService.findByName( recipeName );
         final User usr = userService.findByUsername( name );
 
         if ( usr == null ) {
@@ -183,8 +183,8 @@ public class APIOrderController extends APIController {
         }
 
         if ( r == null ) {
-            System.out.println( "Check recipe --------- " + recipe_name );
-            return new ResponseEntity( errorResponse( "Recipe with the name " + recipe_name + " does not exist" ),
+            System.out.println( "Check recipe --------- " + recipeName );
+            return new ResponseEntity( errorResponse( "Recipe with the name " + recipeName + " does not exist" ),
                     HttpStatus.NOT_FOUND );
         }
 
@@ -193,7 +193,7 @@ public class APIOrderController extends APIController {
             return new ResponseEntity( errorResponse( "Insufficient amount" ), HttpStatus.PAYMENT_REQUIRED );
         }
         else {
-            final CustomerOrder temp = new CustomerOrder( recipe_name, Status.Order_Placed, name );
+            final CustomerOrder temp = new CustomerOrder( recipeName, Status.Order_Placed, name );
             orderService.save( temp );
             return new ResponseEntity<String>( successResponse( String.valueOf( amt - ( r.getPrice() ) ) ),
                     HttpStatus.OK );

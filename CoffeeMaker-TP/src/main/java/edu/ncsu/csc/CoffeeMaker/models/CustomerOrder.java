@@ -133,6 +133,7 @@ public class CustomerOrder extends DomainObject {
     }
 
     /**
+     * Sets the id of the Customer Order ( this is for Hibernate )
      *
      * @param id
      *            the id of the order
