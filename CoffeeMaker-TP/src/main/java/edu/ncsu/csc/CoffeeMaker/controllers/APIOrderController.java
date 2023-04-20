@@ -68,11 +68,44 @@ public class APIOrderController extends APIController {
      * REST API method to provide GET access to all customer orders in the
      * system
      *
-     * @return JSON representation of all recipies
+     * @return JSON representation of all orders
      */
     @GetMapping ( BASE_PATH + "/orders" )
     public List<CustomerOrder> getOrders () {
         return orderService.findAll();
+    }
+
+    /**
+     * REST API method to provide GET access to all customer orders in the
+     * system
+     *
+     * @return JSON representation of all orders in a specific status
+     */
+    @GetMapping ( BASE_PATH + "/orders/status/placed" )
+    public List<CustomerOrder> getPlacedOrders () {
+        return orderService.findByOrderStatus( Status.Order_Placed );
+    }
+
+    /**
+     * REST API method to provide GET access to all customer orders in the
+     * system
+     *
+     * @return JSON representation of all orders in a specific status
+     */
+    @GetMapping ( BASE_PATH + "/orders/status/fulfilled" )
+    public List<CustomerOrder> getFulfilledOrders () {
+        return orderService.findByOrderStatus( Status.Order_Fulfilled );
+    }
+
+    /**
+     * REST API method to provide GET access to all customer orders in the
+     * system
+     *
+     * @return JSON representation of all orders in a specific status
+     */
+    @GetMapping ( BASE_PATH + "/orders/status/completed" )
+    public List<CustomerOrder> getCompleteOrders () {
+        return orderService.findByOrderStatus( Status.Order_Completed );
     }
 
     /**

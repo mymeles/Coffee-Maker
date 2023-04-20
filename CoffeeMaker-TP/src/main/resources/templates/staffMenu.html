@@ -34,14 +34,22 @@
         <meta ingredientName="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/bootstrap.css" />
 <link rel="stylesheet" href="css/app.css" />
+
+<script>
+    var app = angular.module('staffMenuApp', []);
+    app.controller('staffMenuCtrl', function($scope) {
+        $scope.username = sessionStorage.getItem('username');
+    });
+</script>
+
 </head>
 
 <body>
-       <div ng-app="myApp" class="generic-container ng-cloak"
-        ng-controller="addIngredientCtrl as ctrl">
+       <div ng-app="staffMenuApp" class="generic-container ng-cloak"
+        ng-controller="staffMenuCtrl as ctrl">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="lead">Staff Menu</span>
+                <span class="lead">Welcome, {{username}}</span>
                 <a class="link" href="/index">Sign Out</a>
             </div>      
             <div class="formcontainer">
