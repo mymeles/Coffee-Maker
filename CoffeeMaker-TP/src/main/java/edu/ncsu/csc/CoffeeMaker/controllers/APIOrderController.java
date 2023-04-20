@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -200,38 +199,11 @@ public class APIOrderController extends APIController {
             return new ResponseEntity( errorResponse( "Insufficient amount" ), HttpStatus.PAYMENT_REQUIRED );
         }
         else {
-            usr.setCustomerOrder( new CustomerOrder( recipe_name, Status.Order_Placed, name ) );
+            final CustomerOrder temp = new CustomerOrder( recipe_name, Status.Order_Placed, name );
+            usr.setCustomerOrder( temp );
             userService.save( usr );
             return new ResponseEntity<String>( successResponse( String.valueOf( amt - ( r.getPrice() ) ) ),
                     HttpStatus.OK );
-        }
-    }
-
-    /**
-     * REST API method that provides DELETE access by removing an order from the
-     * active list when it is picked up
-     *
-     * @param id
-     *            order id
-     * @return response to the request
-     */
-    @DeleteMapping ( BASE_PATH + "/orders/{id}" )
-    public ResponseEntity pickUpOrder ( @PathVariable ( "id" ) final Long id ) {
-        final User usr = userService.findById( id );
-        // error for a customer not existing handles
-        if ( usr == null ) {
-            return new ResponseEntity( errorResponse( "Customer with the Id " + id + " does not exist" ),
-                    HttpStatus.NOT_FOUND );
-        }
-        // Now handle a customer with an order and if there exits then return a
-        // message
-        if ( usr.getCustomerOrder() == null ) {
-            return new ResponseEntity( errorResponse( "Customer already picked-up thier order" ), HttpStatus.CONFLICT );
-        }
-
-        else {
-            userService.deleteCustomerOrder( usr );
-            return new ResponseEntity<String>( successResponse( "Order Picked-Up" ), HttpStatus.OK );
         }
     }
 
@@ -255,6 +227,43 @@ public class APIOrderController extends APIController {
         }
         else {
             return false;
+        }
+    }
+
+    /**
+     * REST API method that provides PUT access by updating an order from the
+     * active list when it is picked up
+     *
+     * @param id
+     *            order id
+     * @return response to the request
+     */
+    @PutMapping ( BASE_PATH + "/orders/pickup/{id}" )
+    public ResponseEntity pickUpOrder ( @PathVariable ( "id" ) final Long id ) {
+        // try to find an order with that id
+        final CustomerOrder ord = orderService.findById( id );
+
+        // error for a customerOrder not existing handles
+        if ( ord == null ) {
+            return new ResponseEntity( errorResponse( "Order with the Id " + id + "does not exist" ),
+                    HttpStatus.NOT_FOUND );
+        }
+        final User usr = userService.findByUsername( ord.getOrderOwner() );
+        // error for a customer not existing handles
+        if ( usr == null ) {
+            return new ResponseEntity( errorResponse( "Customer with the Id " + id + " does not exist" ),
+                    HttpStatus.NOT_FOUND );
+        }
+
+        // update the order status and save the order
+        ord.setOrderStatus( Status.Order_Completed );
+        orderService.save( ord );
+
+        if ( ord.getOrderStatus() == Status.Order_Placed ) {
+            return new ResponseEntity( errorResponse( "Order is not fulfilled" ), HttpStatus.CONFLICT );
+        }
+        else {
+            return new ResponseEntity<String>( successResponse( "Order Picked-Up" ), HttpStatus.OK );
         }
     }
 
