@@ -134,7 +134,7 @@ public class APIOrderController extends APIController {
             return new ResponseEntity( errorResponse( "Insufficient amount" ), HttpStatus.PAYMENT_REQUIRED );
         }
         else {
-            usr.setCustomerOrder( new CustomerOrder( recipe_name, Status.Order_Placed ) );
+            usr.setCustomerOrder( new CustomerOrder( recipe_name, Status.Order_Placed, name ) );
             userService.save( usr );
             return new ResponseEntity<String>( successResponse( String.valueOf( amt - ( r.getPrice() ) ) ),
                     HttpStatus.OK );

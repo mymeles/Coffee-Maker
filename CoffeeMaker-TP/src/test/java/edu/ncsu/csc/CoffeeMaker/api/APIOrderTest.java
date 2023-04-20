@@ -129,9 +129,9 @@ public class APIOrderTest {
 
         // setup orders to add to users
 
-        ord1 = new CustomerOrder( recipes.get( 0 ).getName(), Status.Order_Placed );
-        ord2 = new CustomerOrder( recipes.get( 1 ).getName(), Status.Order_Placed );
-        ord3 = new CustomerOrder( recipes.get( 2 ).getName(), Status.Order_Placed );
+        ord1 = new CustomerOrder( recipes.get( 0 ).getName(), Status.Order_Placed, "test" );
+        ord2 = new CustomerOrder( recipes.get( 1 ).getName(), Status.Order_Placed, "test" );
+        ord3 = new CustomerOrder( recipes.get( 2 ).getName(), Status.Order_Placed, "test" );
 
         // setup users
         user1 = new User();
