@@ -19,13 +19,14 @@
 			});
 
 			$scope.order = {
-					ownerName : '',
+					ownerName : sessionStorage.getItem('username'),
 					recipeOrdered : '',
 					amountPaid : 0,
-					status : ''
+					status : 'pending'
 			};
+			
 			$scope.reset = function() {
-				$scope.order.ownerName = 'user';
+				$scope.order.ownerName = sessionStorage.getItem('username');
 				$scope.order.recipeOrdered = '';
 				$scope.order.amountPaid = 0;
 				$scope.order.status = 'pending';
@@ -38,7 +39,7 @@
 				$scope.submissionFailure = false;
 				$scope.submissionSuccess = false;
 				
-				$http.post("/api/v1/orders/", $scope.order).then(
+				$http.post("/api/v1/orders/" + $scope.order.username + "/" + $scope.order.amountPaid + "/" + $scope.order.recipeOrdered).then(
 						function(response) {
 							$scope.change = response.data.message;
 							$scope.submissionSuccess = true;

@@ -9,7 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import edu.ncsu.csc.CoffeeMaker.models.roles.Role;
@@ -30,27 +29,27 @@ public class User extends DomainObject {
     /** User id */
     @Id
     @GeneratedValue
-    private Long   id;
+    private Long          id;
 
     /** username */
-    private String username;
+    private String        username;
 
     /**
      * Password for the user that will be used for authentication
      */
-    private String password;
+    private String        password;
 
     /**
      * The role of the user (either CUSTOMER or STAFF)
      */
     @Enumerated ( EnumType.STRING )
-    private Role   role;
-    
+    private Role          role;
+
     /*
      * The order of a user if it is a customer.
      */
-    @OneToOne( cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "customer_order_id")
+    @OneToOne ( cascade = CascadeType.ALL, orphanRemoval = true )
+    @JoinColumn ( name = "customer_order_id" )
     private CustomerOrder customerOrder;
 
     /**
@@ -60,7 +59,7 @@ public class User extends DomainObject {
         this.username = "";
         this.password = "";
         this.role = null;
-        this.customerOrder  = null;
+        this.customerOrder = null;
     };
 
     /**
@@ -167,47 +166,47 @@ public class User extends DomainObject {
     public void setRole ( final Role role ) {
         this.role = role;
     }
-    
-    
 
-	public CustomerOrder getCustomerOrder() {
-		return customerOrder;
-	}
+    public CustomerOrder getCustomerOrder () {
+        return customerOrder;
+    }
 
-	public void setCustomerOrder(CustomerOrder customerOrder) {
-		if(this.role.equals(Role.CUSTOMER)) {
-			this.customerOrder = customerOrder;
-		} else {
-			throw new IllegalArgumentException("A staff can't have an Order");
-		}
-		
-	}
+    public void setCustomerOrder ( final CustomerOrder customerOrder ) {
+        if ( this.role.equals( Role.CUSTOMER ) ) {
+            this.customerOrder = customerOrder;
+        }
+        else {
+            throw new IllegalArgumentException( "A staff can't have an Order" );
+        }
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role
-				+ ", customerOrder=" + customerOrder + "]";
-	}
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(customerOrder, id, password, role, username);
-	}
+    @Override
+    public String toString () {
+        return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role
+                + ", customerOrder=" + customerOrder + "]";
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		return Objects.equals(customerOrder, other.customerOrder) && Objects.equals(id, other.id)
-				&& Objects.equals(password, other.password) && role == other.role
-				&& Objects.equals(username, other.username);
-	}
+    @Override
+    public int hashCode () {
+        return Objects.hash( customerOrder, id, password, role, username );
+    }
 
-    
+    @Override
+    public boolean equals ( final Object obj ) {
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
+        final User other = (User) obj;
+        return Objects.equals( customerOrder, other.customerOrder ) && Objects.equals( id, other.id )
+                && Objects.equals( password, other.password ) && role == other.role
+                && Objects.equals( username, other.username );
+    }
 
 }
