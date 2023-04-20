@@ -34,14 +34,24 @@
         <meta ingredientName="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/bootstrap.css" />
 <link rel="stylesheet" href="css/app.css" />
+<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+<script>
+    var app = angular.module('customerMenuApp', []);
+    app.controller('customerMenuCtrl', function($scope) {
+        $scope.username = sessionStorage.getItem('username');
+    });
+</script>
+
 </head>
 
 <body>
-       <div ng-app="myApp" class="generic-container ng-cloak"
-        ng-controller="addIngredientCtrl as ctrl">
+       <div ng-app="customerMenuApp" class="generic-container ng-cloak"
+        ng-controller="customerMenuCtrl as ctrl">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="lead">Customer Menu</span>
+                <span class="lead">Welcome, {{username}}</span>
                 <a class="link" href="/index" >Sign Out</a>
             </div>      
             <div class="formcontainer">
@@ -52,6 +62,7 @@
 		<a href="#" class="button" onclick="pickupOrder()">Pick-Up Order</a><br>
 	</div>
 	<script>
+	
 		function orderBeverage() {
 			var customerorderLink = "makecoffee.html";
 			window.location.href = customerorderLink;
@@ -60,8 +71,6 @@
 			var customerorderLink = "pickupOrder.html";
 			window.location.href = customerorderLink;
 		}
-
-		
 	</script>
 				
 	     </div>
