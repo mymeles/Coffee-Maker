@@ -53,6 +53,8 @@
 		<a href="#" class="button" onclick="addRecipe()">Add Recipe</a>
 		<br/>
 		<a href="#" class="button" onclick="editRecipe()">Edit Recipe</a>
+		<br/>
+		<a href="#" class="button" onclick="deleteRecipe()">Delete Recipe</a>
 		<br />
 		<a href="#" class="button" onclick="addIngredient()">Add Ingredient</a>
 		<br />
@@ -74,6 +76,11 @@
 		
 		function editRecipe() {
 			var editLink = "editrecipe.html";
+			window.location.href = editLink;
+		}
+		
+		function deleteRecipe() {
+			var editLink = "deleterecipe.html";
 			window.location.href = editLink;
 		}
 		
