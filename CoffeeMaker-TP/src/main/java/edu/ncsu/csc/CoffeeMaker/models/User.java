@@ -2,14 +2,11 @@ package edu.ncsu.csc.CoffeeMaker.models;
 
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 import edu.ncsu.csc.CoffeeMaker.models.roles.Role;
 import edu.ncsu.csc.CoffeeMaker.userAuthentication.SecurityEncoder;
@@ -29,28 +26,21 @@ public class User extends DomainObject {
     /** User id */
     @Id
     @GeneratedValue
-    private Long          id;
+    private Long   id;
 
     /** username */
-    private String        username;
+    private String username;
 
     /**
      * Password for the user that will be used for authentication
      */
-    private String        password;
+    private String password;
 
     /**
      * The role of the user (either CUSTOMER or STAFF)
      */
     @Enumerated ( EnumType.STRING )
-    private Role          role;
-
-    /*
-     * The order of a user if it is a customer.
-     */
-    @OneToOne ( cascade = CascadeType.ALL, orphanRemoval = true )
-    @JoinColumn ( name = "customer_order_id" )
-    private CustomerOrder customerOrder;
+    private Role   role;
 
     /**
      * Constructor for Hibernate
@@ -59,7 +49,6 @@ public class User extends DomainObject {
         this.username = "";
         this.password = "";
         this.role = null;
-        this.customerOrder = null;
     };
 
     /**
@@ -142,6 +131,10 @@ public class User extends DomainObject {
      * This method checks if the password from the user and encoded passwords
      * are similar
      *
+     * @param plaintext
+     *            the plaintext passcode that needs to be checked against the
+     *            encryped password
+     *
      * @return true if the passwords match, false if not
      */
     public boolean checkPassword ( final String plaintext ) {
@@ -167,29 +160,14 @@ public class User extends DomainObject {
         this.role = role;
     }
 
-    public CustomerOrder getCustomerOrder () {
-        return customerOrder;
-    }
-
-    public void setCustomerOrder ( final CustomerOrder customerOrder ) {
-        if ( this.role.equals( Role.CUSTOMER ) ) {
-            this.customerOrder = customerOrder;
-        }
-        else {
-            throw new IllegalArgumentException( "A staff can't have an Order" );
-        }
-
-    }
-
     @Override
     public String toString () {
-        return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role
-                + ", customerOrder=" + customerOrder + "]";
+        return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + "]";
     }
 
     @Override
     public int hashCode () {
-        return Objects.hash( customerOrder, id, password, role, username );
+        return Objects.hash( id, password, role, username );
     }
 
     @Override
@@ -204,8 +182,7 @@ public class User extends DomainObject {
             return false;
         }
         final User other = (User) obj;
-        return Objects.equals( customerOrder, other.customerOrder ) && Objects.equals( id, other.id )
-                && Objects.equals( password, other.password ) && role == other.role
+        return Objects.equals( id, other.id ) && Objects.equals( password, other.password ) && role == other.role
                 && Objects.equals( username, other.username );
     }
 

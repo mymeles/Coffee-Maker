@@ -7,15 +7,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 import edu.ncsu.csc.CoffeeMaker.models.status.Status;
 
 /**
- * Class containing the orders of customers that holds a recipe and the order's
- * status
- *
- * @author Meles Meles
+ * Class containing the orders of customers that holds a recipe, the order's
+ * status, and the owner of the order.
  *
  */
 @Entity
@@ -26,15 +23,17 @@ public class CustomerOrder extends DomainObject {
     @GeneratedValue
     private Long   id;
 
-    /** Recipe name */
-    @ManyToOne
-    private Recipe recipe;
+    /** Name of the recipe that was ordered **/
+    private String recipe;
 
     /**
-     * The role of the user (either CUSTOMER or STAFF)
+     * The status of the order, Order_Placed, Order_Made, Order_Complete
      */
     @Enumerated ( EnumType.STRING )
     private Status orderStatus;
+
+    /** Owner of the order **/
+    private String orderOwner;
 
     /**
      * CustomOrder constructor
@@ -42,23 +41,31 @@ public class CustomerOrder extends DomainObject {
     public CustomerOrder () {
         this.recipe = null;
         this.orderStatus = null;
+        this.orderOwner = null;
     }
 
     /**
      * CustomOrder constructor
      *
+     * @param recipe
+     *            the recipe ordered
+     * @param orderStatus
+     *            the status of the order
+     * @param orderOwner
+     *            the owner of the order
      */
-    public CustomerOrder ( final Recipe recipe, final Status order_status ) {
+    public CustomerOrder ( final String recipe, final Status orderStatus, final String orderOwner ) {
         setRecipe( recipe );
-        setOrderStatus( order_status );
+        setOrderStatus( orderStatus );
+        setOrderOwner( orderOwner );
     }
 
     /**
      * Returns the recipe connected to the order
      *
-     * @return order recipe
+     * @return the recipe ordered
      */
-    public Recipe getRecipe () {
+    public String getRecipe () {
         return recipe;
     }
 
@@ -66,13 +73,13 @@ public class CustomerOrder extends DomainObject {
      * Sets the recipe for the order
      *
      * @param recipe
-     *            recipe connected to the order
-     * @throws IAE
+     *            the recipe to set
+     * @throws IllegalArgumentException
      *             if the recipe is null
      */
-    public void setRecipe ( final Recipe recipe ) {
+    public void setRecipe ( final String recipe ) {
         if ( recipe == null ) {
-            throw new IllegalArgumentException( "Ordes Recipe can't be null" );
+            throw new IllegalArgumentException( "Order's recipe can't be null" );
         }
         this.recipe = recipe;
     }
@@ -90,22 +97,46 @@ public class CustomerOrder extends DomainObject {
      * Sets the status of the order
      *
      * @param orderStatus
-     *            current status of the order
-     * @throws IAE
-     *             is the status is null
+     *            the status to set
+     * @throws IllegalArgumentException
+     *             if the status is null
      */
     public void setOrderStatus ( final Status orderStatus ) {
         if ( orderStatus == null ) {
-            throw new IllegalArgumentException( "Ordes Status can't be null" );
+            throw new IllegalArgumentException( "Order's status can't be null" );
         }
         this.orderStatus = orderStatus;
     }
 
     /**
-     * Sets the order id
+     * Returns the owner of the order
+     *
+     * @return the owner of the order
+     */
+    public String getOrderOwner () {
+        return orderOwner;
+    }
+
+    /**
+     * Sets the owner of the order
+     *
+     * @param orderOwner
+     *            the owner of the order
+     * @throws IllegalArgumentException
+     *             if the order owner is null
+     **/
+    public void setOrderOwner ( final String orderOwner ) {
+        if ( orderOwner == null ) {
+            throw new IllegalArgumentException( "Order's owner can't be null" );
+        }
+        this.orderOwner = orderOwner;
+    }
+
+    /**
+     * Sets the id of the Customer Order ( this is for Hibernate )
      *
      * @param id
-     *            id of the order
+     *            the id of the order
      */
     public void setId ( final Long id ) {
         this.id = id;
@@ -121,7 +152,7 @@ public class CustomerOrder extends DomainObject {
 
     @Override
     public int hashCode () {
-        return Objects.hash( id, orderStatus, recipe );
+        return Objects.hash( id, orderStatus, recipe, orderOwner );
     }
 
     @Override
@@ -137,7 +168,6 @@ public class CustomerOrder extends DomainObject {
         }
         final CustomerOrder other = (CustomerOrder) obj;
         return Objects.equals( id, other.id ) && orderStatus == other.orderStatus
-                && Objects.equals( recipe, other.recipe );
+                && Objects.equals( recipe, other.recipe ) && Objects.equals( orderOwner, other.orderOwner );
     }
-
 }

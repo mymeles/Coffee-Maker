@@ -60,6 +60,7 @@
 			<div class="center">
 		<a href="#" class="button" onclick="orderBeverage()">Order Beverage</a><br>
 		<a href="#" class="button" onclick="pickupOrder()">Pick-Up Order</a><br>
+		<a href="#" class="button" onclick="viewOrderHistory()">View Order History</a><br>
 	</div>
 	<script>
 	
@@ -69,6 +70,10 @@
 		}
 		function pickupOrder() {
 			var customerorderLink = "pickupOrder.html";
+			window.location.href = customerorderLink;
+		}
+		function viewOrderHistory() {
+			var customerorderLink = "viewOrderHistory.html";
 			window.location.href = customerorderLink;
 		}
 	</script>

@@ -22,14 +22,14 @@
 					ownerName : sessionStorage.getItem('username'),
 					recipeOrdered : '',
 					amountPaid : 0,
-					status : 'pending'
+					status : 'Order_Placed'
 			};
 			
 			$scope.reset = function() {
 				$scope.order.ownerName = sessionStorage.getItem('username');
 				$scope.order.recipeOrdered = '';
 				$scope.order.amountPaid = 0;
-				$scope.order.status = 'pending';
+				$scope.order.status = 'Order_Placed';
 			}
 			
 			$scope.make = function() {
@@ -46,7 +46,7 @@
 						}, function(errResponse) {
 							console.log(errResponse);
 							$scope.submissionFailure = true;
-							$scope.error = "Error while making recipe";
+							$scope.error = errResponse.data.message;
 						});
 
 			}
@@ -126,7 +126,7 @@
 							<br />
 							<br />
 							<div ng-show="submissionSuccess" class="success">Coffee was made. Your change is {{change}}.</div>
-							<div ng-show="submissionFailure">An error occurred: Insufficient Funds or Item out of stock.: {{order.ownerName}}, {{order.recipeOrdered}}, {{order.amountPaid}}, {{order.status}}</div>
+							<div ng-show="submissionFailure">{{error}}</div>
 						</div>
 					</div>
 				</div>

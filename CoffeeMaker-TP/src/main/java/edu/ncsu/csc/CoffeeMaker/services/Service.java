@@ -94,11 +94,11 @@ abstract public class Service <T extends DomainObject, K> {
      * database, but not from memory. Trying to save it again after deletion is
      * undefined behaviour. YMMV.
      *
-     * @param obj
+     * @param id
      *            The object to delete from the database.
      */
     public void deleteById ( final K id ) {
-        getRepository().deleteById(id);;
+        getRepository().deleteById( id );
     }
 
     /**

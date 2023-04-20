@@ -34,14 +34,25 @@
         <meta ingredientName="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/bootstrap.css" />
 <link rel="stylesheet" href="css/app.css" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+
+<script>
+    var app = angular.module('staffMenuApp', []);
+    app.controller('staffMenuCtrl', function($scope) {
+        $scope.username = sessionStorage.getItem('username');
+    });
+</script>
+
 </head>
 
 <body>
-       <div ng-app="myApp" class="generic-container ng-cloak"
-        ng-controller="addIngredientCtrl as ctrl">
+       <div ng-app="staffMenuApp" class="generic-container ng-cloak"
+        ng-controller="staffMenuCtrl as ctrl">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="lead">Staff Menu</span>
+                <span class="lead">Welcome, {{username}}</span>
                 <a class="link" href="/index">Sign Out</a>
             </div>      
             <div class="formcontainer">
@@ -49,6 +60,8 @@
                         <div class="form-group col-md-12">
 			<div class="center">
 		<a href="#" class="button" onclick="viewOrders()">View Orders</a>
+		<br/>
+		<a href="#" class="button" onclick="fulfillOrders()">Fulfill Orders</a>
 		<br/>
 		<a href="#" class="button" onclick="addRecipe()">Add Recipe</a>
 		<br/>
@@ -67,6 +80,11 @@
 		function viewOrders() {
 			var ordersLink = "viewOrders.html";
 			window.location.href = ordersLink;
+		}
+		
+		function fulfillOrders() {
+			var fulfillOrdersLink = "fulfillOrders.html";
+			window.location.href = fulfillOrdersLink;
 		}
 
 		function addRecipe() {

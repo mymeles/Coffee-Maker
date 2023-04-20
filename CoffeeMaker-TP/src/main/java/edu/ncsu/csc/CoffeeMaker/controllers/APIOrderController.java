@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,11 +67,77 @@ public class APIOrderController extends APIController {
      * REST API method to provide GET access to all customer orders in the
      * system
      *
-     * @return JSON representation of all recipies
+     * @return JSON representation of all orders
      */
     @GetMapping ( BASE_PATH + "/orders" )
     public List<CustomerOrder> getOrders () {
         return orderService.findAll();
+    }
+
+    /**
+     * REST API method to provide GET access to all customer orders in the
+     * system
+     *
+     * @return JSON representation of all orders in a specific status
+     */
+    @GetMapping ( BASE_PATH + "/orders/status/placed" )
+    public List<CustomerOrder> getPlacedOrders () {
+        return orderService.findByOrderStatus( Status.Order_Placed );
+    }
+
+    /**
+     * REST API method to provide GET access to all customer orders in the
+     * system
+     *
+     * @return JSON representation of all orders in a specific status
+     */
+    @GetMapping ( BASE_PATH + "/orders/status/fulfilled" )
+    public List<CustomerOrder> getFulfilledOrders () {
+        return orderService.findByOrderStatus( Status.Order_Fulfilled );
+    }
+
+    /**
+     * REST API method to provide GET access to all customer orders in the
+     * system
+     *
+     * @return JSON representation of all orders in a specific status
+     */
+    @GetMapping ( BASE_PATH + "/orders/status/completed" )
+    public List<CustomerOrder> getCompleteOrders () {
+        return orderService.findByOrderStatus( Status.Order_Completed );
+    }
+
+    /**
+     * REST API method that provides PUT access by updating the order's status
+     * to complete
+     *
+     * @param id
+     *            order id
+     * @return response to the request
+     */
+    @PutMapping ( BASE_PATH + "/orders/fulfill/{id}" )
+    public ResponseEntity fulfillOrder ( @PathVariable ( "id" ) final Long id ) {
+        // try to find an order with that id
+        final CustomerOrder ord = orderService.findById( id );
+
+        // error for a customerOrder not existing handles
+        if ( ord == null ) {
+            return new ResponseEntity( errorResponse( "Order with the Id " + id + "does not exist" ),
+                    HttpStatus.NOT_FOUND );
+        }
+
+        // determine if we can make the recipe
+        final boolean orderFlag = fulfillOrderHelper( ord );
+
+        if ( orderFlag ) {
+            ord.setOrderStatus( Status.Order_Fulfilled );
+            orderService.save( ord );
+            return new ResponseEntity<String>( successResponse( "Order fulfilled and ready for pick up!" ),
+                    HttpStatus.OK );
+        }
+        else {
+            return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
+        }
     }
 
     /**
@@ -100,96 +165,38 @@ public class APIOrderController extends APIController {
      *            customer username
      * @param amt
      *            payment amount
-     * @param ord
-     *            customer order
+     * @param recipeName
+     *            the name of the recipe in the order
      * @return response to the request
      */
-    @PostMapping ( BASE_PATH + "/orders/{name}/{amt}/{recipe_name}" )
+    @PostMapping ( BASE_PATH + "/orders/{name}/{amt}/{recipeName}" )
     public ResponseEntity placeOrder ( @PathVariable final String name, @PathVariable final int amt,
-            @PathVariable final String recipe_name ) {
-        final Recipe r = recipeService.findByName( recipe_name );
+            @PathVariable final String recipeName ) {
+
+        final Recipe r = recipeService.findByName( recipeName );
         final User usr = userService.findByUsername( name );
+
         if ( usr == null ) {
-            System.out.println( "Check user --------- " + name + " " + recipe_name );
+            System.out.println( "Check user --------- " + name );
             return new ResponseEntity( errorResponse( "Customer with the name " + name + " does not exist" ),
                     HttpStatus.NOT_FOUND );
         }
 
         if ( r == null ) {
-            System.out.println( "Check recipe --------- " + name + " " + recipe_name );
-            return new ResponseEntity( errorResponse( "Recipe with the name " + recipe_name + " does not exist" ),
+            System.out.println( "Check recipe --------- " + recipeName );
+            return new ResponseEntity( errorResponse( "Recipe with the name " + recipeName + " does not exist" ),
                     HttpStatus.NOT_FOUND );
         }
-        // Now handle a customer with an order and if there exits then return a
-        // message
-        if ( usr.getCustomerOrder() != null ) {
-            return new ResponseEntity( errorResponse( "Customer can only place one order at a time " ),
-                    HttpStatus.CONFLICT );
-        }
+
         // handle the money and make sure it is enough
         if ( amt < r.getPrice() ) {
-            return new ResponseEntity( errorResponse( "Inssufficent amount" ), HttpStatus.PAYMENT_REQUIRED );
+            return new ResponseEntity( errorResponse( "Insufficient amount" ), HttpStatus.PAYMENT_REQUIRED );
         }
         else {
-            usr.setCustomerOrder( new CustomerOrder( r, Status.Order_Placed ) );
-            userService.save( usr );
+            final CustomerOrder temp = new CustomerOrder( recipeName, Status.Order_Placed, name );
+            orderService.save( temp );
             return new ResponseEntity<String>( successResponse( String.valueOf( amt - ( r.getPrice() ) ) ),
                     HttpStatus.OK );
-        }
-    }
-
-    /**
-     * REST API method that provides DELETE access by removing an order from the
-     * active list when it is picked up
-     *
-     * @param id
-     *            order id
-     * @return response to the request
-     */
-    @DeleteMapping ( BASE_PATH + "/orders/{id}" )
-    public ResponseEntity pickUpOrder ( @PathVariable ( "id" ) final Long id ) {
-        final User usr = userService.findById( id );
-        // error for a customer not existing handles
-        if ( usr == null ) {
-            return new ResponseEntity( errorResponse( "Customer with the Id " + id + " does not exist" ),
-                    HttpStatus.NOT_FOUND );
-        }
-        // Now handle a customer with an order and if there exits then return a
-        // message
-        if ( usr.getCustomerOrder() == null ) {
-            return new ResponseEntity( errorResponse( "Customer already picked-up thier order" ), HttpStatus.CONFLICT );
-        }
-
-        else {
-            userService.deleteCustomerOrder( usr );
-            return new ResponseEntity<String>( successResponse( "Order Picked-Up" ), HttpStatus.OK );
-        }
-    }
-
-    /**
-     * REST API method that provides PUT access by updating the order's status
-     * to complete
-     *
-     * @param id
-     *            order id
-     * @return response to the request
-     */
-    @PutMapping ( BASE_PATH + "/orders/{id}" )
-    public ResponseEntity completeOrder ( @PathVariable ( "id" ) final Long id ) {
-        final CustomerOrder ord = orderService.findById( id );
-        // error for a customer not existing handles
-        if ( ord == null ) {
-            return new ResponseEntity( errorResponse( "Order with the Id " + id + "does not exist" ),
-                    HttpStatus.NOT_FOUND );
-        }
-        final boolean order_flag = completeOrderHelper( ord );
-        if ( order_flag ) {
-            ord.setOrderStatus( Status.Order_Completed );
-            orderService.save( ord );
-            return new ResponseEntity<String>( successResponse( "Order Completed" ), HttpStatus.OK );
-        }
-        else {
-            return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
         }
     }
 
@@ -201,14 +208,55 @@ public class APIOrderController extends APIController {
      *            order being completed
      * @return true if the inventory has enough ingredients
      */
-    public boolean completeOrderHelper ( final CustomerOrder ord ) {
+    public boolean fulfillOrderHelper ( final CustomerOrder ord ) {
         final Inventory inventory = inventoryService.getInventory();
-        if ( inventory.useIngredients( ord.getRecipe() ) ) {
+
+        // get the recipe
+        final Recipe temp = recipeService.findByName( ord.getRecipe() );
+
+        if ( inventory.useIngredients( temp ) ) {
             inventoryService.save( inventory );
             return true;
         }
         else {
             return false;
+        }
+    }
+
+    /**
+     * REST API method that provides PUT access by updating an order from the
+     * active list when it is picked up
+     *
+     * @param id
+     *            order id
+     * @return response to the request
+     */
+    @PutMapping ( BASE_PATH + "/orders/pickup/{id}" )
+    public ResponseEntity pickUpOrder ( @PathVariable ( "id" ) final Long id ) {
+        // try to find an order with that id
+        final CustomerOrder ord = orderService.findById( id );
+
+        // error for a customerOrder not existing handles
+        if ( ord == null ) {
+            return new ResponseEntity( errorResponse( "Order with the Id " + id + "does not exist" ),
+                    HttpStatus.NOT_FOUND );
+        }
+        final User usr = userService.findByUsername( ord.getOrderOwner() );
+        // error for a customer not existing handles
+        if ( usr == null ) {
+            return new ResponseEntity( errorResponse( "Customer with the Id " + id + " does not exist" ),
+                    HttpStatus.NOT_FOUND );
+        }
+
+        // update the order status and save the order
+        ord.setOrderStatus( Status.Order_Completed );
+        orderService.save( ord );
+
+        if ( ord.getOrderStatus() == Status.Order_Placed ) {
+            return new ResponseEntity( errorResponse( "Order is not fulfilled" ), HttpStatus.CONFLICT );
+        }
+        else {
+            return new ResponseEntity<String>( successResponse( "Order Picked-Up" ), HttpStatus.OK );
         }
     }
 

@@ -240,4 +240,46 @@ public class MappingController {
         return "pickupOrder";
     }
 
+    /**
+     * Handles a GET request for the staff menu. The GET request provides a view
+     * to the client that includes options for staff members to view orders,
+     * manage inventory, and manage user accounts.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/viewOrders", "/viewOrders.html" } )
+    public String viewOrders ( final Model model ) {
+        return "viewOrders";
+    }
+
+    /**
+     * Handles a GET request for the staff menu. The GET request provides a view
+     * to the client that includes options for staff members to view orders,
+     * manage inventory, and manage user accounts.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/fulfillOrders", "/fulfillOrders.html" } )
+    public String fulfillOrders ( final Model model ) {
+        return "fulfillOrders";
+    }
+
+    /**
+     * Handles a GET request for the staff menu. The GET request provides a view
+     * to the client that includes options for staff members to view orders,
+     * manage inventory, and manage user accounts.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/viewOrderHistory", "/viewOrderHistory.html" } )
+    public String viewOrderHistory ( final Model model ) {
+        return "viewOrderHistory";
+    }
+
 }
