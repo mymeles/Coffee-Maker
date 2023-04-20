@@ -109,6 +109,39 @@ public class APIOrderController extends APIController {
     }
 
     /**
+     * REST API method that provides PUT access by updating the order's status
+     * to complete
+     *
+     * @param id
+     *            order id
+     * @return response to the request
+     */
+    @PutMapping ( BASE_PATH + "/orders/fulfill/{id}" )
+    public ResponseEntity fulfillOrder ( @PathVariable ( "id" ) final Long id ) {
+        // try to find an order with that id
+        final CustomerOrder ord = orderService.findById( id );
+
+        // error for a customerOrder not existing handles
+        if ( ord == null ) {
+            return new ResponseEntity( errorResponse( "Order with the Id " + id + "does not exist" ),
+                    HttpStatus.NOT_FOUND );
+        }
+
+        // determine if we can make the recipe
+        final boolean order_flag = fulfillOrderHelper( ord );
+
+        if ( order_flag ) {
+            ord.setOrderStatus( Status.Order_Fulfilled );
+            orderService.save( ord );
+            return new ResponseEntity<String>( successResponse( "Order fulfilled and ready for pick up!" ),
+                    HttpStatus.OK );
+        }
+        else {
+            return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
+        }
+    }
+
+    /**
      * REST API method to provide GET access to a specific order, as indicated
      * by the path variable provided (the id of the order desired)
      *
@@ -203,33 +236,6 @@ public class APIOrderController extends APIController {
     }
 
     /**
-     * REST API method that provides PUT access by updating the order's status
-     * to complete
-     *
-     * @param id
-     *            order id
-     * @return response to the request
-     */
-    @PutMapping ( BASE_PATH + "/orders/{id}" )
-    public ResponseEntity completeOrder ( @PathVariable ( "id" ) final Long id ) {
-        final CustomerOrder ord = orderService.findById( id );
-        // error for a customer not existing handles
-        if ( ord == null ) {
-            return new ResponseEntity( errorResponse( "Order with the Id " + id + "does not exist" ),
-                    HttpStatus.NOT_FOUND );
-        }
-        final boolean order_flag = completeOrderHelper( ord );
-        if ( order_flag ) {
-            ord.setOrderStatus( Status.Order_Completed );
-            orderService.save( ord );
-            return new ResponseEntity<String>( successResponse( "Order Completed" ), HttpStatus.OK );
-        }
-        else {
-            return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
-        }
-    }
-
-    /**
      * A helper function to help complete the order by making the coffee in the
      * Inventory
      *
@@ -237,7 +243,7 @@ public class APIOrderController extends APIController {
      *            order being completed
      * @return true if the inventory has enough ingredients
      */
-    public boolean completeOrderHelper ( final CustomerOrder ord ) {
+    public boolean fulfillOrderHelper ( final CustomerOrder ord ) {
         final Inventory inventory = inventoryService.getInventory();
 
         // get the recipe
