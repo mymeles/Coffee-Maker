@@ -41,7 +41,7 @@ public class RecipeTest {
     // @Autowired
     // final IngredientService ingredientService = new IngredientService();
     /**
-     * Deletes recipes in db
+     * Deletes recipes in db 
      */
     @BeforeEach
     public void setup () {

@@ -131,6 +131,10 @@ public class User extends DomainObject {
      * This method checks if the password from the user and encoded passwords
      * are similar
      *
+     * @param plaintext
+     *            the plaintext passcode that needs to be checked against the
+     *            encryped password
+     *
      * @return true if the passwords match, false if not
      */
     public boolean checkPassword ( final String plaintext ) {
@@ -156,10 +160,6 @@ public class User extends DomainObject {
         this.role = role;
     }
 
-    @Override
-    public String toString () {
-        return "User [id=" + id + ", username=" + username + ", role=" + role + "]";
-    }
 
     @Override
     public int hashCode () {

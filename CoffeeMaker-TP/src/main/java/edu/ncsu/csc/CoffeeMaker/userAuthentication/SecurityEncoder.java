@@ -12,6 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 
 public class SecurityEncoder {
+    /**
+     * An instance of the password encoder
+     */
     static PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     /**
@@ -19,7 +22,7 @@ public class SecurityEncoder {
      *
      * @param password
      *            the password to encrypt
-     * @return
+     * @return a string of the encoded password
      */
     public static String encryptPassword ( final String password ) {
         return passwordEncoder.encode( password );
