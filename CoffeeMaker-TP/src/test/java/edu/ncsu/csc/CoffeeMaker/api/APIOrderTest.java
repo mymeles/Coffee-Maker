@@ -1,9 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -182,12 +180,6 @@ public class APIOrderTest {
 
         assertEquals( 3, orderService.count() );
 
-        // Check for Users with orders alreadu existing
-        mvc.perform( post(
-                "/api/v1/orders/" + ursList.get( 2 ).getUsername() + "/" + 5 + "/" + recipeList.get( 2 ).getName() )
-                        .contentType( MediaType.APPLICATION_JSON ) )
-                .andExpect( status().isConflict() );
-
         // check with invalid user names
         mvc.perform( post( "/api/v1/orders/" + "fake" + "/" + 5 + "/" + recipeList.get( 2 ).getName() )
                 .contentType( MediaType.APPLICATION_JSON ) ).andExpect( status().isNotFound() );
@@ -245,16 +237,14 @@ public class APIOrderTest {
                         .contentType( MediaType.APPLICATION_JSON ) )
                 .andExpect( status().isOk() );
 
-        final List<User> ursList1 = userService.getAllUsers();
-
         // Now all the orders are in for the users
         // It is time to make the order
-        final Long id = ursList1.get( 0 ).getCustomerOrder().getId();
-        mvc.perform( put( "/api/v1/orders/" + id ).contentType( MediaType.APPLICATION_JSON ) )
+        final Long id = orderService.findAll().get( 0 ).getId();
+        mvc.perform( put( "/api/v1/orders/fulfill/" + id ).contentType( MediaType.APPLICATION_JSON ) )
                 .andExpect( status().isOk() );
 
         final List<CustomerOrder> ordList = orderService.findAll();
-        assertEquals( ordList.get( 0 ).getOrderStatus(), Status.Order_Completed );
+        assertEquals( ordList.get( 0 ).getOrderStatus(), Status.Order_Fulfilled );
 
         final Inventory inv = inventoryService.getInventory();
 
@@ -262,8 +252,8 @@ public class APIOrderTest {
             assertEquals( (int) inv.getIngredients().get( i ).getAmount(), ( 95 ) );
         }
 
-        // incalid idd for the order
-        mvc.perform( put( "/api/v1/orders/" + 0 ).contentType( MediaType.APPLICATION_JSON ) )
+        // invalid id for the order
+        mvc.perform( put( "/api/v1/orders/fulfill/" + 34901234 ).contentType( MediaType.APPLICATION_JSON ) )
                 .andExpect( status().isNotFound() );
 
         // check for insufficent value fr invetory to compelte an order.
@@ -272,7 +262,7 @@ public class APIOrderTest {
         }
         inventoryService.save( inv );
 
-        mvc.perform( put( "/api/v1/orders/" + id ).contentType( MediaType.APPLICATION_JSON ) )
+        mvc.perform( put( "/api/v1/orders/fulfill/" + id ).contentType( MediaType.APPLICATION_JSON ) )
                 .andExpect( status().isConflict() );
     }
 
@@ -290,24 +280,12 @@ public class APIOrderTest {
 
         // Now all the orders are in for the users
         // It is time to make the order
-        final Long id = ursList.get( 0 ).getCustomerOrder().getId();
-        mvc.perform( put( "/api/v1/orders/" + id ).contentType( MediaType.APPLICATION_JSON ) )
+        final Long id = orderService.findAll().get( 0 ).getId();
+        mvc.perform( put( "/api/v1/orders/pickup/" + id ).contentType( MediaType.APPLICATION_JSON ) )
                 .andExpect( status().isOk() );
 
         final List<CustomerOrder> ordList = orderService.findAll();
         assertEquals( ordList.get( 0 ).getOrderStatus(), Status.Order_Completed );
-
-        mvc.perform( delete( "/api/v1/orders/" + ursList.get( 0 ).getId() ).contentType( MediaType.APPLICATION_JSON ) )
-                .andExpect( status().isOk() );
-
-        assertNull( userService.findById( ursList.get( 0 ).getId() ).getCustomerOrder() );
-
-        // check for error with incorrect user id
-        mvc.perform( delete( "/api/v1/orders/" + 0 ).contentType( MediaType.APPLICATION_JSON ) )
-                .andExpect( status().isNotFound() );
-        mvc.perform( delete( "/api/v1/orders/" + ursList.get( 0 ).getId() ).contentType( MediaType.APPLICATION_JSON ) )
-                .andExpect( status().isConflict() );
-
     }
 
     @Test
