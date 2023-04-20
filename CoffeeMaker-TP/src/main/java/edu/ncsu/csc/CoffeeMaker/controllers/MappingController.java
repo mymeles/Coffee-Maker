@@ -268,4 +268,18 @@ public class MappingController {
         return "fulfillOrders";
     }
 
+    /**
+     * Handles a GET request for the staff menu. The GET request provides a view
+     * to the client that includes options for staff members to view orders,
+     * manage inventory, and manage user accounts.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/viewOrderHistory", "/viewOrderHistory.html" } )
+    public String viewOrderHistory ( final Model model ) {
+        return "viewOrderHistory";
+    }
+
 }
