@@ -269,7 +269,7 @@ public class CustomerOrderTest {
             fail();
         }
         catch ( final IllegalArgumentException e ) {
-            assertEquals( e.getMessage(), "Ordes Recipe can't be null" );
+            assertEquals( e.getMessage(), "Order's recipe can't be null" );
         }
 
         try {
