@@ -39,7 +39,7 @@
 				$scope.submissionFailure = false;
 				$scope.submissionSuccess = false;
 				
-				$http.post("/api/v1/orders/" + $scope.order.username + "/" + $scope.order.amountPaid + "/" + $scope.order.recipeOrdered).then(
+				$http.post("/api/v1/orders/" + $scope.order.ownerName + "/" + $scope.order.amountPaid + "/" + $scope.order.recipeOrdered).then(
 						function(response) {
 							$scope.change = response.data.message;
 							$scope.submissionSuccess = true;
