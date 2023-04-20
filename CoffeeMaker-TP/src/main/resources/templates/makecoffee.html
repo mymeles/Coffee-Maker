@@ -22,14 +22,14 @@
 					ownerName : sessionStorage.getItem('username'),
 					recipeOrdered : '',
 					amountPaid : 0,
-					status : 'pending'
+					status : 'Order_Placed'
 			};
 			
 			$scope.reset = function() {
 				$scope.order.ownerName = sessionStorage.getItem('username');
 				$scope.order.recipeOrdered = '';
 				$scope.order.amountPaid = 0;
-				$scope.order.status = 'pending';
+				$scope.order.status = 'Order_Placed';
 			}
 			
 			$scope.make = function() {
