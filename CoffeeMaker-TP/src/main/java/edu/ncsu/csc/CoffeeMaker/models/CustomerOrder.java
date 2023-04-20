@@ -7,7 +7,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 import edu.ncsu.csc.CoffeeMaker.models.status.Status;
 
@@ -26,12 +25,11 @@ public class CustomerOrder extends DomainObject {
     @GeneratedValue
     private Long   id;
 
-    /** Recipe name */
-    @ManyToOne
-    private Recipe recipe;
+    /** Name of the recipe that was ordered **/
+    private String recipe;
 
     /**
-     * The role of the user (either CUSTOMER or STAFF)
+     * The status of the order, Order_Placed, Order_Made, Order_Complete
      */
     @Enumerated ( EnumType.STRING )
     private Status orderStatus;
@@ -48,7 +46,7 @@ public class CustomerOrder extends DomainObject {
      * CustomOrder constructor
      *
      */
-    public CustomerOrder ( final Recipe recipe, final Status order_status ) {
+    public CustomerOrder ( final String recipe, final Status order_status ) {
         setRecipe( recipe );
         setOrderStatus( order_status );
     }
@@ -58,7 +56,7 @@ public class CustomerOrder extends DomainObject {
      *
      * @return order recipe
      */
-    public Recipe getRecipe () {
+    public String getRecipe () {
         return recipe;
     }
 
@@ -70,7 +68,7 @@ public class CustomerOrder extends DomainObject {
      * @throws IAE
      *             if the recipe is null
      */
-    public void setRecipe ( final Recipe recipe ) {
+    public void setRecipe ( final String recipe ) {
         if ( recipe == null ) {
             throw new IllegalArgumentException( "Ordes Recipe can't be null" );
         }
