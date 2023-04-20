@@ -13,6 +13,9 @@ import edu.ncsu.csc.CoffeeMaker.models.status.Status;
 /**
  * Class containing the orders of customers that holds a recipe, the order's
  * status, and the owner of the order.
+ * 
+ * @author Meles Meles 
+ * @author Evan Kite
  *
  */
 @Entity

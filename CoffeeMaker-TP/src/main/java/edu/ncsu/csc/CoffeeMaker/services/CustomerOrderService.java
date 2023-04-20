@@ -13,8 +13,11 @@ import edu.ncsu.csc.CoffeeMaker.models.status.Status;
 import edu.ncsu.csc.CoffeeMaker.repositories.CustomerOrderRepository;
 
 /**
- * TODO class comments go here
- *
+ * The customerOrderService is used to handle CRUD operations on the CustomerOrder
+ * model.
+ * 
+ * @author Haris Khan 
+ * @author Meles Meles 
  */
 @Component
 @Transactional
