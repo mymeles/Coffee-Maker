@@ -71,6 +71,26 @@ public class APIUserController extends APIController {
     }
 
     /**
+     *
+     * @param username
+     * @return the role of the user if the user exists
+     */
+    @GetMapping ( BASE_PATH + "/users/role/{username}" )
+    public ResponseEntity<String> getRoleByUsername ( @PathVariable final String username ) {
+        // find the user
+        final User user = userService.findByUsername( username );
+
+        // ensure the user is not null
+        if ( user == null ) {
+            return new ResponseEntity( "User with username " + username + " does not exist", HttpStatus.NOT_FOUND );
+        }
+
+        // if the user does exist, return the role of the user as a JSON string
+        final String response = "{ \"role\": \"" + user.getRole().toString() + "\" }";
+        return new ResponseEntity<>( response, HttpStatus.OK );
+    }
+
+    /**
      * Updates a user password
      *
      * @param username
