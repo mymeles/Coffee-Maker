@@ -1,7 +1,14 @@
 package edu.ncsu.csc.CoffeeMaker;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import edu.ncsu.csc.CoffeeMaker.models.User;
+import edu.ncsu.csc.CoffeeMaker.models.roles.Role;
+import edu.ncsu.csc.CoffeeMaker.services.UserService;
 
 /**
  * Entrypoint to the CoffeeMaker Application. Allows running as Java
@@ -13,6 +20,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication ( scanBasePackages = { "edu.ncsu.csc.CoffeeMaker" } )
 public class CoffeeMakerApplication {
 
+    @Autowired
+    private UserService userService;
+
     /**
      * Main method
      *
@@ -23,4 +33,12 @@ public class CoffeeMakerApplication {
         SpringApplication.run( CoffeeMakerApplication.class, args );
     }
 
+    /**
+     * Method to create the default manager user
+     */
+    @PostConstruct
+    public void createDefaultManager () {
+        final User manager = new User( "manager", "manager", Role.MANAGER );
+        userService.save( manager );
+    }
 }
