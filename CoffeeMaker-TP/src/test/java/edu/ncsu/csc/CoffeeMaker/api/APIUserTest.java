@@ -221,4 +221,35 @@ class APIUserTest {
                 .andExpect( jsonPath( "$.message" ).value( "Invalid LogIn Credentials" ) );
     }
 
+    /**
+     * This method tests retrieving a user's information and role by their
+     * username. It first creates a new User instance, saves it to the
+     * UserService, and sends GET requests to the "/api/v1/users/{username}" and
+     * "/api/v1/users/role/{username}" endpoints. Finally, it verifies that the
+     * response JSON matches the expected format for the user and their role.
+     */
+    @Test
+    @Transactional
+    void testGetUserAndRoleByUsername () throws Exception {
+        final User newUser = new User( "user1", "password", Role.CUSTOMER );
+        userService.save( newUser );
+
+        // Test getUserByUsername
+        mvc.perform( get( "/api/v1/users/user1" ) ).andExpect( status().isOk() )
+                .andExpect( jsonPath( "$.username" ).value( "user1" ) )
+                .andExpect( jsonPath( "$.role" ).value( "CUSTOMER" ) );
+
+        // Test getRoleByUsername
+        mvc.perform( get( "/api/v1/users/role/user1" ) ).andExpect( status().isOk() )
+                .andExpect( jsonPath( "$.role" ).value( "CUSTOMER" ) );
+
+        // Test non-existent user
+        mvc.perform( get( "/api/v1/users/nonexistentuser" ) ).andExpect( status().isNotFound() )
+                .andExpect( jsonPath( "$.message" ).value( "User with the username nonexistentuser not found" ) );
+
+        mvc.perform( get( "/api/v1/users/role/nonexistentuser" ) ).andExpect( status().isNotFound() )
+                .andExpect( jsonPath( "$.message" ).value( "User with username nonexistentuser does not exist" ) );
+
+    }
+
 }

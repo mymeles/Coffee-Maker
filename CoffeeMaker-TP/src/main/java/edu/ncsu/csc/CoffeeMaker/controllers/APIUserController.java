@@ -74,6 +74,7 @@ public class APIUserController extends APIController {
     }
 
     /**
+     * This method can pull the role of a user
      *
      * @param username
      * @return the role of the user if the user exists
@@ -85,7 +86,8 @@ public class APIUserController extends APIController {
 
         // ensure the user is not null
         if ( user == null ) {
-            return new ResponseEntity( "User with username " + username + " does not exist", HttpStatus.NOT_FOUND );
+            return new ResponseEntity( errorResponse( "User with username " + username + " does not exist" ),
+                    HttpStatus.NOT_FOUND );
         }
 
         // if the user does exist, return the role of the user as a JSON string
@@ -123,8 +125,6 @@ public class APIUserController extends APIController {
      *            the username to log into
      * @param password
      *            the password of the user to log in to
-     * @param role
-     *            the role of the user being logged into
      *
      * @return a success or error response
      */

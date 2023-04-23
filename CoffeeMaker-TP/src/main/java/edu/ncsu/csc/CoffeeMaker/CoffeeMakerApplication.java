@@ -20,6 +20,9 @@ import edu.ncsu.csc.CoffeeMaker.services.UserService;
 @SpringBootApplication ( scanBasePackages = { "edu.ncsu.csc.CoffeeMaker" } )
 public class CoffeeMakerApplication {
 
+    /**
+     * Used to save the manager at initialization
+     */
     @Autowired
     private UserService userService;
 
