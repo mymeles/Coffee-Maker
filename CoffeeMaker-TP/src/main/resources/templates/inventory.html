@@ -164,11 +164,25 @@ input.ng-dirty.ng-invalid-min {
 			</div>
 			<div ng-show="success">Inventory Successfully Updated</div>
 			<div ng-show="failure">Error - No ingredients to update inventory</div>
+			<a href="#" onclick="redirectToHome()">Home</a><br><br><a href="/index">Sign Out</a>
+			
 		</div>
 
-		<a href="/staffMenu">Home</a><br><br><a href="/index">Sign Out</a>
-
-
-
 </body>
+
+<script>
+function redirectToHome() {
+    var userRole = sessionStorage.getItem('role');
+
+    if (userRole === 'MANAGER') {
+        window.location.href = '/managerMenu';
+    } else if (userRole === 'STAFF') {
+        window.location.href = '/staffMenu';
+    } else if ( userRole === "CUSTOMER" ){
+        window.location.href = '/customerMenu';
+    } else {
+        console.error('Invalid role found in sessionStorage');
+    }
+}
+</script>
 </html>

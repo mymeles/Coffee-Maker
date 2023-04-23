@@ -280,10 +280,26 @@ input.ng-dirty.ng-invalid-min {
 			<div ng-show="failureIngredient">Can't create recipe. Ingredients required.</div>
 			<div ng-show="selectedNone">Can't Delete Ingredients. Selecting Ingredients Required.</div>
 	</div>
-		<a href="/staffMenu">Home</a>
+		        <a href="#" onclick="redirectToHome()">Home</a><br><br><a href="/index">Sign Out</a>
 	</div>
 </div>
 
 
 </body>
+
+<script>
+function redirectToHome() {
+    var userRole = sessionStorage.getItem('role');
+
+    if (userRole === 'MANAGER') {
+        window.location.href = '/managerMenu';
+    } else if (userRole === 'STAFF') {
+        window.location.href = '/staffMenu';
+    } else if ( userRole === "CUSTOMER" ){
+        window.location.href = '/customerMenu';
+    } else {
+        console.error('Invalid role found in sessionStorage');
+    }
+}
+</script>
 </html>
