@@ -77,6 +77,7 @@ public class APIUserController extends APIController {
      * This method can pull the role of a user
      *
      * @param username
+     *            the name of the user in the system
      * @return the role of the user if the user exists
      */
     @GetMapping ( BASE_PATH + "/users/role/{username}" )
