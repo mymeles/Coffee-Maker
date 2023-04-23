@@ -31,7 +31,7 @@
             $scope.username = '';
             $scope.password = '';
             $scope.role = '';
-            $scope.staffrole = "STAFF";
+            
             $scope.reset = function() {
                 $scope.username = '';
                 $scope.password = '';
@@ -40,31 +40,48 @@
                     $scope.logIn.$setPristine();
                 }
             }
+            
             $scope.submit = function() {
                 $scope.login();
             };
+            
+            $scope.failureFunc = function() {
+            	$scope.reset();
+                console.error("Error while logging in");
+                alert("Invalid Credentials.")
+                $scope.failure = true;
+            }
+            
             $scope.login = function() {
                 $scope.failure = false;
-                const role = String($scope.role);
-                $http.get("/api/v1/users/" + $scope.username + "/" + $scope.password + "/" + $scope.role).then(function(success) {
-                    // if the log in is a success, then set the username in session storage 
+
+                // make the login request once we have the role
+                $http.get("/api/v1/users/" + $scope.username + "/" + $scope.password).then(function(success) {
+                    // set the role 
+					$scope.role = success.data.role;
+                	
+                	// if the log in is a success, then set the username, role, and login status
                     sessionStorage.setItem('username', $scope.username);
-                    // once the username has been saved, we can reset the form
-                    $scope.reset();
-                    if (role.startsWith("S")) {
+                    sessionStorage.setItem('role', $scope.role); 
+                    sessionStorage.setItem('logged in', "true");
+                    
+                    // redirect to the appropriate page based on the user's role
+                    if ($scope.role == "STAFF") {
                         var staffmenuLink = "/staffMenu";
                         window.location.href = staffmenuLink;
-                    } else {
+                    } else if ($scope.role == "CUSTOMER") {
                         var customermenuLink = "/customerMenu";
                         window.location.href = customermenuLink;
+                    } else if ($scope.role == "MANAGER"){
+                    	var managermenuLink = "/managerMenu";
+                        window.location.href = managermenuLink;
                     }
                 }, function(rejection) {
-                    console.error("Error while logging in");
-                    alert("Invalid Credentials.")
-                    $scope.failure = true;
+                	$scope.failureFunc();
                 });
             };
-            $scope.reset();
+            
+                        
         });
         /*]]>*/
     </script>
@@ -88,18 +105,6 @@
                             <label class="col-md-2 control-lable" for="file">Password:</label>
                             <div class="col-md-7">
                                 <input type="password" ng-model="password" class="name form-control input-sm" ng-minlength="6" ng-maxlength="20" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-12">
-                            <label class="col-md-2 control-lable" for="file">Select A Role</label>
-                            <div class="col-md-7">
-                                <select ng-model="role" required>
-                                    <option value="">-- Select a role --</option>
-                                    <option value="CUSTOMER">Customer</option>
-                                    <option value="STAFF">Staff</option>
-                                </select>
                             </div>
                         </div>
                     </div>
