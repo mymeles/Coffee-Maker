@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <style>
+        input.ng-valid {
+            background-color: lightgreen;
+        }
+
+        input.ng-dirty.ng-invalid-required,
+        input.ng-dirty.ng-invalid-number {
+            background-color: red;
+        }
+
+        input.ng-dirty.ng-invalid-min {
+            background-color: yellow;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+
+<body>
+    <script>
+        /*<![CDATA[*/
+        var app = angular.module('myApp', []);
+        app.controller('usersCtrl', function($scope, $http) {
+            $scope.reset = function() {
+                $scope.users = {};
+                $scope.getUsers();
+                $scope.duplicate = false;
+                if (undefined != $scope.viewOrders) {
+                    $scope.viewOrders.$setPristine(); // reset Form
+                }
+            }
+            
+            $scope.username = sessionStorage.getItem('username');
+            
+            $scope.getUsers = function() {
+                $http.get("/api/v1/users/").then(function(response) {
+                    $scope.users = response.data;
+                    console.log($scope.orders);
+                }, function(rejection) {
+                    console.error("Error retrieving users");
+                })
+            }
+            
+            $scope.managerRole = "MANAGER";
+            
+            $scope.deleteUser = function(username) {
+            	
+            	$http.delete("api/v1/users/" + username).then(function(success) {
+            		// reset the list of users
+            		$scope.getUsers();
+            		
+            	}, function(error){
+            		console.log(errors)
+            	});
+            	
+            }
+            
+            $scope.getUsers();
+        });
+        /*]]>*/
+    </script>
+    <div class="generic-container ng-cloak" ng-app="myApp" ng-controller="usersCtrl as ctrl">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">Manage Users</span>
+            </div>
+        </div>
+        <div class="formcontainer">
+            <table style="font-size: 18px; line-height: 1.5em; margin-bottom: 10px; width: 100%; border: 1px solid black;">
+                <tr>
+                    <th style="width: 40%; text-align: left; border: 1px solid black;">User</th>
+                    <th style="width: 30%; text-align: center; border: 1px solid black;">Role</th>
+                    <th style="width: 30%; text-align: center; border: 1px solid black;">Action</th>
+                </tr>
+                <tr ng-repeat="user in users track by $index" ng-show="user.role != managerRole">
+                    <td style="width: 40%; border: 1px solid black;">{{user.username}}</td>
+                    <td style="width: 30%; text-align: center; border: 1px solid black;">{{user.role}}</td>
+                    <td style="width: 20%; text-align: center; border: 1px solid black;"><button class="button" ng-click="deleteUser(user.username)">Delete</button></td>
+                </tr>
+            </table>
+        </div>
+        <a href="#" onclick="redirectToHome()">Home</a><br><br><a href="/index">Sign Out</a>
+</body>
+<script>
+function redirectToHome() {
+    var userRole = sessionStorage.getItem('role');
+
+    if (userRole === 'MANAGER') {
+        window.location.href = '/managerMenu';
+    } else if (userRole === 'STAFF') {
+        window.location.href = '/staffMenu';
+    } else if ( userRole === "CUSTOMER" ){
+        window.location.href = '/customerMenu';
+    } else {
+        console.error('Invalid role found in sessionStorage');
+    }
+}
+</script>
+</html>
