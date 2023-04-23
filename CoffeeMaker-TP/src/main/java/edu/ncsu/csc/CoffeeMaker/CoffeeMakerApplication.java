@@ -38,7 +38,9 @@ public class CoffeeMakerApplication {
      */
     @PostConstruct
     public void createDefaultManager () {
-        final User manager = new User( "manager", "manager", Role.MANAGER );
-        userService.save( manager );
+        if ( userService.findByUsername( "manager" ) == null ) {
+            final User manager = new User( "manager", "manager", Role.MANAGER );
+            userService.save( manager );
+        }
     }
 }

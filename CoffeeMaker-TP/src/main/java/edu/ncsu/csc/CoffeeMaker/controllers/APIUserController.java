@@ -1,6 +1,8 @@
 package edu.ncsu.csc.CoffeeMaker.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.User;
+import edu.ncsu.csc.CoffeeMaker.models.roles.Role;
 import edu.ncsu.csc.CoffeeMaker.services.UserService;
 
 /**
@@ -125,21 +128,39 @@ public class APIUserController extends APIController {
      *
      * @return a success or error response
      */
-    @GetMapping ( BASE_PATH + "/users/{username}/{password}/{role}" )
-    public ResponseEntity login ( @PathVariable final String username, @PathVariable final String password,
-            @PathVariable final String role ) {
+    @GetMapping ( BASE_PATH + "/users/{username}/{password}" )
+    public ResponseEntity login ( @PathVariable final String username, @PathVariable final String password ) {
         final User user = userService.findByUsername( username );
         if ( user == null ) {
             return new ResponseEntity( errorResponse( "User with the username " + username + " not found" ),
                     HttpStatus.NOT_FOUND );
         }
 
-        if ( !user.checkPassword( password ) || !user.getRole().toString().equals( role ) ) {
+        if ( !user.checkPassword( password ) ) {
             return new ResponseEntity( errorResponse( "Invalid LogIn Credentials" ), HttpStatus.CONFLICT );
         }
         else {
-            return new ResponseEntity( successResponse( "Correct login details!" ), HttpStatus.OK );
+            return new ResponseEntity( successResponse( "Correct login details!", user.getRole() ), HttpStatus.OK );
         }
+    }
+
+    /**
+     * This creates a success response message to send to the API Caller
+     * specifically meant for the login api call
+     *
+     * @param message
+     *            the message to be sent
+     * @param role
+     *            the role of the user being called
+     * @return a ResponseEntity with either the error or the user role and
+     *         success message
+     */
+    private Map<String, Object> successResponse ( final String message, final Role role ) {
+        final Map<String, Object> response = new HashMap<>();
+        response.put( "message", message );
+        response.put( "role", role.toString() );
+        response.put( "success", true );
+        return response;
     }
 
     /**

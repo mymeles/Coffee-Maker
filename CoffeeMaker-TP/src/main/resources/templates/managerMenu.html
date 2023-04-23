@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Manager Menu</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<style>
+		.button {
+			display: inline-block;
+			padding: 12px 24px;
+			font-size: 20px;
+			font-weight: bold;
+			text-align: center;
+			text-decoration: none;
+			background-color: #2B2D42;
+			color: #fff;
+			border-radius: 4px;
+			box-shadow: 0 2px 5px rgba(0,0,0,.3);
+			margin-right: 20px;
+			margin: 20px
+		}
+
+		.center {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+		
+		.link{
+		float: right;
+		}
+		
+	</style>
+        <meta charset="utf-8">
+        <meta ingredientName="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+
+<script>
+    var app = angular.module('managerMenuApp', []);
+    app.controller('managerMenuCtrl', function($scope) {
+        $scope.username = sessionStorage.getItem('username');
+    });
+</script>
+
+</head>
+
+<body>
+<div ng-app="managerMenuApp" class="generic-container ng-cloak"
+    ng-controller="managerMenuCtrl as ctrl">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="lead">Welcome, {{username}}</span>
+            <a class="link" href="/index">Sign Out</a>
+        </div>      
+        <div class="formcontainer">
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="#" class="button" onclick="viewOrders()">View Orders</a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#" class="button" onclick="fulfillOrders()">Fulfill Orders</a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#" class="button" onclick="addRecipe()">Add Recipe</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="#" class="button" onclick="editRecipe()">Edit Recipe</a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#" class="button" onclick="deleteRecipe()">Delete Recipe</a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#" class="button" onclick="addIngredient()">Add Ingredient</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="#" class="button" onclick="viewInventory()">View Inventory</a>
+                </div>
+            </div>
+	<script>
+		function viewOrders() {
+			var ordersLink = "viewOrders.html";
+			window.location.href = ordersLink;
+		}
+		
+		function fulfillOrders() {
+			var fulfillOrdersLink = "fulfillOrders.html";
+			window.location.href = fulfillOrdersLink;
+		}
+
+		function addRecipe() {
+			var recipeLink = "recipe.html";
+			window.location.href = recipeLink;
+		}
+		
+		function editRecipe() {
+			var editLink = "editrecipe.html";
+			window.location.href = editLink;
+		}
+		
+		function deleteRecipe() {
+			var editLink = "deleterecipe.html";
+			window.location.href = editLink;
+		}
+		
+		function addIngredient() {
+			var ingredientLink = "ingredient.html";
+			window.location.href = ingredientLink;
+		}
+		
+		function viewInventory() {
+			var inventoryLink = "inventory.html";
+			window.location.href = inventoryLink;
+		}
+	</script>
+				
+	     </div>
+    </div>
+         </div>
+    </div>
+       </div>
+</body>
+</html> 

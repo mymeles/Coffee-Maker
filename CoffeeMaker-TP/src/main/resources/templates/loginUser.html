@@ -55,31 +55,29 @@
             $scope.login = function() {
                 $scope.failure = false;
 
-                // try to get the role of the user from the username
-                $http.get("api/v1/users/role/" + $scope.username).then(function(success) {
-                    $scope.role = success.data.role;
+                // make the login request once we have the role
+                $http.get("/api/v1/users/" + $scope.username + "/" + $scope.password).then(function(success) {
+                    // set the role 
+					$scope.role = success.data.role;
+                	
+                	// if the log in is a success, then set the username, role, and login status
+                    sessionStorage.setItem('username', $scope.username);
+                    sessionStorage.setItem('role', $scope.role); 
+                    sessionStorage.setItem('logged in', "true");
                     
-                    // make the login request once we have the role
-                    $http.get("/api/v1/users/" + $scope.username + "/" + $scope.password + "/" + $scope.role).then(function(success) {
-                        // if the log in is a success, then set the username, role, and login status
-                        sessionStorage.setItem('username', $scope.username);
-                        sessionStorage.setItem('role', $scope.role); 
-                        sessionStorage.setItem('logged in', "true");
-                        
-                        // redirect to the appropriate page based on the user's role
-                        if ($scope.role == "STAFF") {
-                            var staffmenuLink = "/staffMenu";
-                            window.location.href = staffmenuLink;
-                        } else if ($scope.role == "CUSTOMER") {
-                            var customermenuLink = "/customerMenu";
-                            window.location.href = customermenuLink;
-                        }
-                    }, function(rejection) {
-                    	$scope.failureFunc();
-                    });
-                                        
+                    // redirect to the appropriate page based on the user's role
+                    if ($scope.role == "STAFF") {
+                        var staffmenuLink = "/staffMenu";
+                        window.location.href = staffmenuLink;
+                    } else if ($scope.role == "CUSTOMER") {
+                        var customermenuLink = "/customerMenu";
+                        window.location.href = customermenuLink;
+                    } else if ($scope.role == "MANAGER"){
+                    	var managermenuLink = "/managerMenu";
+                        window.location.href = managermenuLink;
+                    }
                 }, function(rejection) {
-					$scope.failureFunc();
+                	$scope.failureFunc();
                 });
             };
             
