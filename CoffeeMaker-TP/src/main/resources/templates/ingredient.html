@@ -6,11 +6,11 @@
             input.ng-valid {
                 background-color: lightgreen;
             }
-           
+
             input.ng-dirty.ng-invalid-required,input.ng-dirty.ng-invalid-number {
                 background-color: red;
             }
-           
+
             input.ng-dirty.ng-invalid-min {
                 background-color: yellow;
             }
@@ -21,77 +21,73 @@
         <meta charset="utf-8">
         <meta ingredientName="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/bootstrap.css" />
-<link rel="stylesheet" href="css/app.css" />
-
-
+        <link rel="stylesheet" href="css/app.css" />
     </head>
     <body>
-    <script
-		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+        <script>
+            /*<![CDATA[*/
+            var app = angular.module('myApp', []);
+            app.controller('addIngredientCtrl', function($scope, $http, $q) {
+                console.log("Hit!");
 
-	<script>
-		/*<![CDATA[*/
-		var app = angular.module('myApp', []);
-		app.controller('addIngredientCtrl', function($scope, $http, $q) {
-			console.log("Hit!");
+                $scope.reset = function() {
+                    $scope.ingredient = {
+                        ingredientName : '',
+                        amount : ''
+                    };
+                    if (undefined != $scope.addIngredientPage) {
+                        $scope.addIngredientPage.$setPristine();
+                    }
+                }
 
-			$scope.reset = function() {
-				$scope.ingredient = {
-					ingredientName : '',
-					amount : ''
-				};
-				if (undefined != $scope.addIngredientPage) {
-					$scope.addIngredientPage.$setPristine();
-				}
-			}
+                $scope.submit = function() {
+                    $scope.addIngredient();
+                    $scope.reset();
+                }
 
-			$scope.submit = function() {
-				$scope.addIngredient();
-				$scope.reset();
-			}
+                $scope.addIngredient = function() {
+                    $scope.success = false;
+                    $scope.failure = false;
 
-			$scope.addIngredient = function() {
-				$scope.success = false;
-				$scope.failure = false;
+                    $http.post("/api/v1/ingredients/inventory", {
+                        ingredientName: $scope.ingredient.ingredientName,
+                        amount: $scope.ingredient.amount
+                    }).then(
+                        function(success) {
+                            $scope.success = true;
+                            $scope.failure = false;
+                        }, function(rejection) {
+                            $scope.success = false;
+                            $scope.failure = true;
+                            console.error("Error while adding Ingredient");
+                        });
+                }
 
-				$http.post("/api/v1/ingredients/inventory", {
-				      ingredientName: $scope.ingredient.ingredientName,
-				      amount: $scope.ingredient.amount
-				    }).then(
-						function(success) {
-							$scope.success = true;
-							$scope.failure = false;
-						}, function(rejection) {
-							$scope.success = false;
-							$scope.failure = true;
-							console.error("Error while adding Ingredient");
-						});
-			}
+                $scope.reset();
 
-			$scope.reset();
-
-		});
-		/*]]>*/
-	</script>
+            });
+            /*]]>*/
+        </script>
         <div ng-app="myApp" class="generic-container ng-cloak"
         ng-controller="addIngredientCtrl as ctrl">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="lead">Add an Ingredient</span>
-            </div>      
-            <div class="formcontainer">
-                <form ng-submit="submit()" ingredientName="addIngredientPage"
-                    class="form-horizontal">
-                    <div class="row">
-                        <div class="form-group col-md-12">
-                            <label class="col-md-2 control-lable" for="file">Ingredient Name: </label>
-                            <div class="col-md-7">
-                                <input type="text" ng-model="ingredient.ingredientName" ingredientName="ingredientName"
-                                    class="ingredientName form-control input-sm"
-                                    placeholder="Enter Ingredient Name" required="0"/>
-                                <div class="has-error" ng-show="addIngredientPage.$dirty">
-                                   <span ng-show="addIngredientPage.ingredientName.$error.required">This is a required field.</span> <span
-                                        ng-show="addIngredientPage.ingredientName.$invalid">This field is invalid.</span>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="lead">Add an Ingredient</span>
+                </div>
+                <div class="formcontainer">
+                    <form ng-submit="submit()" ingredientName="addIngredientPage"
+                        class="form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label class="col-md-2 control-lable" for="file">Ingredient Name: </label>
+                                <div class="col-md-7">
+                                    <input type="text" ng-model="ingredient.ingredientName" ingredientName="ingredientName"
+                                        class="ingredientName form-control input-sm"
+                                        placeholder="Enter Ingredient Name" required="0"/>
+                                    <div class="has-error" ng-show="addIngredientPage.$dirty">
+                                        <span ng-show="addIngredientPage.ingredientName.$error.required">This is a required field.</span> <span
+                                            ng-show="addIngredientPage.ingredientName.$invalid">This field is invalid.</span>
                                 </div>
                             </div>
                         </div>
@@ -102,10 +98,10 @@
                             <div class="col-md-7">
                                 <input type="number" ng-model="ingredient.amount" amount="amount"
                                     class="amount form-control input-sm"
-                                    placeholder="Enter Ingredient amount" min="0"/>
+                                    placeholder="Enter Ingredient amount" min="1"/>
                                 <div class="has-error" ng-show="addIngredientPage.$dirty">
-                                  <span ng-show="addIngredientPage.amount.$error.required">This is a required field</span> <span
-                                        ng-show="addIngredientPage.amount.$error.min">Minimum amount is 0</span> <span ng-show="addIngredientPage.amount.$invalid">This
+                                    <span ng-show="addIngredientPage.amount.$error.required">This is a required field</span> <span
+                                        ng-show="addIngredientPage.amount.$error.min">Minimum amount is 1</span> <span ng-show="addIngredientPage.amount.$invalid">This
                                         field is invalid </span>
                                 </div>
                             </div>
@@ -115,7 +111,7 @@
                         <div class="btn-alignment">
                             <input type="submit" value="Add Ingredient"
                                 class="btn btn-primary btn-sm"
-                                ng-disabled="addIngredientPage.$invalid" />
+                                ng-disabled="addIngredientPage.$invalid || !ingredient.amount  || ingredient.amount < 1" />
                             <button type="button" ng-click="reset()"
                                 class="btn btn-warning btn-sm"
                                 ng-disabled="addIngredientPage.$pristine">Reset Form</button>
@@ -127,21 +123,20 @@
             <div ng-show="failure">Can't add Ingredient. Duplicate</div>
         </div>
         <a href="#" onclick="redirectToHome()">Home</a><br><br><a href="/index">Sign Out</a>
-</body>
+    </body>
+    <script>
+        function redirectToHome() {
+            var userRole = sessionStorage.getItem('role');
 
-<script>
-function redirectToHome() {
-    var userRole = sessionStorage.getItem('role');
-
-    if (userRole === 'MANAGER') {
-        window.location.href = '/managerMenu';
-    } else if (userRole === 'STAFF') {
-        window.location.href = '/staffMenu';
-    } else if ( userRole === "CUSTOMER" ){
-        window.location.href = '/customerMenu';
-    } else {
-        console.error('Invalid role found in sessionStorage');
-    }
-}
-</script>
+            if (userRole === 'MANAGER') {
+                window.location.href = '/managerMenu';
+            } else if (userRole === 'STAFF') {
+                window.location.href = '/staffMenu';
+            } else if ( userRole === "CUSTOMER" ){
+                window.location.href = '/customerMenu';
+            } else {
+                console.error('Invalid role found in sessionStorage');
+            }
+        }
+    </script>
 </html>
