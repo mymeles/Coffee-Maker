@@ -59,6 +59,11 @@
             		console.log(errors)
             	});
             	
+            	// if you were also signed in as a guest, reset the guest username in your session storage 
+                if (sessionStorage.getItem("guestUsername") == username) {
+                    sessionStorage.removeItem("guestUsername");
+                }
+            	
             }
             
             $scope.getUsers();
