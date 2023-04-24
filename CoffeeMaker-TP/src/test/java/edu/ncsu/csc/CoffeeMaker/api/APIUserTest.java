@@ -252,4 +252,16 @@ class APIUserTest {
 
     }
 
+        // create a test for guest user creation 
+        @Test
+        @Transactional
+        void testCreateGuestUser () throws Exception {
+            final User newUser = new User( "guest", "password", Role.GUEST );
+            userService.save( newUser );
+    
+            mvc.perform( get( "/api/v1/users/guest" ) ).andExpect( status().isOk() )
+                    .andExpect( jsonPath( "$.username" ).value( "guest" ) )
+                    .andExpect( jsonPath( "$.role" ).value( "GUEST" ) );
+        }
+
 }

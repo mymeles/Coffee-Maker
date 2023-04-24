@@ -140,6 +140,10 @@ public class APIUserController extends APIController {
         if ( !user.checkPassword( password ) ) {
             return new ResponseEntity( errorResponse( "Invalid LogIn Credentials" ), HttpStatus.CONFLICT );
         }
+        else if ( user.getRole().toString().equals( "GUEST" ) ) {
+            return new ResponseEntity( errorResponse( "Cannot login with a Guest account!" ), HttpStatus.CONFLICT );
+
+        }
         else {
             return new ResponseEntity( successResponse( "Correct login details!", user.getRole() ), HttpStatus.OK );
         }
@@ -209,6 +213,40 @@ public class APIUserController extends APIController {
         userService.delete( tempUser );
 
         return new ResponseEntity( successResponse( username + " successfully deleted" ), HttpStatus.OK );
+    }
+
+    /**
+     * REST API method to provide POST access to the User model. This is used to
+     * create a new Guest User
+     *
+     * @return ResponseEntity with the username of the guest user that was
+     *         created
+     */
+    @GetMapping ( BASE_PATH + "/users/createGuest" )
+    public ResponseEntity makeGuest () {
+        User tempUser;
+        String username;
+
+        // generate the username
+        do {
+            // use rand to generate a random username
+            username = "guest" + (int) ( Math.random() * 1000000 );
+            // check if the guest already exists
+            tempUser = userService.findByUsername( username );
+
+        }
+        while ( tempUser != null );
+
+        // create with the new username
+        tempUser = new User( username, "", Role.GUEST );
+        userService.save( tempUser );
+
+        // create the return response to the user
+        final String response = "{ \"username\": \"" + tempUser.getUsername() + "\" }";
+
+        // return the response
+        return new ResponseEntity( response, HttpStatus.OK );
+
     }
 
 }

@@ -25,7 +25,14 @@ public enum Role {
     STAFF,
     /**
      * The MANAGER role represents a MANAGER of the CoffeeMaker establishment.
-     * Managers can perform functionality that is available to both customers and staff members
+     * Managers can perform functionality that is available to both customers
+     * and staff members
      */
-    MANAGER
+    MANAGER,
+    /**
+     * The GUEST role represents a guest of the CoffeeMaker establishment.
+     * guests can perform functionality that is available to customers but do
+     * not have to log in. Their orders are saved.
+     */
+    GUEST
 }
