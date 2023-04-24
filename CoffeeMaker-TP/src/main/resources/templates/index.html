@@ -30,10 +30,55 @@
         <link rel="stylesheet" href="css/bootstrap.css" />
 <link rel="stylesheet" href="css/app.css" />
 </head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+<script>
+        /*<![CDATA[*/
+        var app = angular.module('indexPage', []);
+        app.controller('indexCtrl', function($scope, $http) {
+            console.log("Hit!");
+
+			$scope.continueAsGuest = function() {
+				// first check to see if a guest is stored in the session storage
+				var previousGuest = sessionStorage.getItem("guestUsername");
+
+				// if the guest exists, then just redirect to customerMenu.html
+				if (previousGuest != null) {
+					// set the guest username in the session storage
+					sessionStorage.setItem("username", previousGuest);
+					// set the role to GUEST 
+					sessionStorage.setItem("role", "GUEST");
+					
+					var customerMenuLink = "customerMenu.html";
+					window.location.href = customerMenuLink;
+				}
+				// if the guest does not exist, then call the API to make the guest
+				else {
+					// create the guest user which will be done in the back end and return the guest username 
+					$http.get("/api/v1/users/createGuest").then(function(success) {
+						// set the guest username in the session storage
+						sessionStorage.setItem("username", success.data.username);
+						sessionStorage.setItem("guestUsername", success.data.username); // this will mark as previously logged in as a guest
+						sessionStorage.setItem("role", "GUEST");
+						// redirect to the customer menu
+						var customerMenuLink = "customerMenu.html";
+						window.location.href = customerMenuLink;
+					}, function(error) {
+						console.error("Error while creating guest");
+						alert("Error while creating guest");
+					});
+
+				}
+			}
+
+            
+                        
+        });
+        /*]]>*/
+</script>
 
 <body>
-       <div ng-app="myApp" class="generic-container ng-cloak"
-        ng-controller="addIngredientCtrl as ctrl">
+       <div ng-app="indexPage" class="generic-container ng-cloak"
+        ng-controller="indexCtrl as ctrl">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="lead">Welcome To CoffeeMaker</span>
@@ -43,7 +88,9 @@
                         <div class="form-group col-md-12">
 			<div class="center">
 		<a href="#" class="button" onclick="createAccount()">Create Account</a><br>
-		<a href="#" class="button" onclick="login()">Login</a>
+		<a href="#" class="button" onclick="login()">Login</a><br> 
+		<a href="#" class="button" ng-click="continueAsGuest()">Continue As Guest</a>
+
 	</div>
 	<script>
 		function createAccount() {
@@ -61,7 +108,11 @@
     </div>
          </div>
     </div>
+           <footer>
+   <p><a href="https://github.ncsu.edu/engr-csc326-spring2023/csc326-TP-203-1/wiki/Privacy-Policy">Privacy Policy</a></p>
+</footer> 
        </div>
+
 </body>
 </html> 
 

@@ -97,6 +97,22 @@
             <div ng-show="fulfillmentSuccess" class="success">Order fulfilled successfully.</div>
         </div>
 
-			<a href="/staffMenu">Home</a>
-		</div>
+			<a href="#" onclick="redirectToHome()">Home</a></div>
 	</div>
+	</body>
+	<script>
+function redirectToHome() {
+    var userRole = sessionStorage.getItem('role');
+
+    if (userRole === 'MANAGER') {
+        window.location.href = '/managerMenu';
+    } else if (userRole === 'STAFF') {
+        window.location.href = '/staffMenu';
+    } else if ( userRole === "CUSTOMER" ){
+        window.location.href = '/customerMenu';
+    } else {
+        console.error('Invalid role found in sessionStorage');
+    }
+}
+</script>
+	</html>
