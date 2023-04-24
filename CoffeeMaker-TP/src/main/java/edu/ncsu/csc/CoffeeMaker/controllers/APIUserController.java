@@ -219,8 +219,8 @@ public class APIUserController extends APIController {
      * REST API method to provide POST access to the User model. This is used to
      * create a new Guest User
      *
-     * @param username
-     * @return
+     * @return ResponseEntity with the username of the guest user that was
+     *         created
      */
     @GetMapping ( BASE_PATH + "/users/createGuest" )
     public ResponseEntity makeGuest () {
